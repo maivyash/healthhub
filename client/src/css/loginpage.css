@@ -1,0 +1,142 @@
+.login-page {
+  margin-top: 10vw;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  font-family: Arial, sans-serif;
+}
+
+.login-container {
+  display: flex;
+  max-width: 900px;
+  width: 100%;
+  background-color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.logo-section {
+  width: 50%;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.logo-image {
+    height: 25vw;
+}
+
+.form-section {
+  width: 50%;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+.form-box {
+  border: 1px solid #ccc;
+  padding: 1.5rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.input-field {
+  padding: 0.75rem;
+  background-color: #ffffff;
+   border: 1px solid;
+   border-image: linear-gradient(
+        45deg,
+        red,
+        orange,
+        yellow,
+        green,
+        blue,
+        indigo,
+        violet
+      ) 1;
+      padding: 12px 16px;
+      border-radius: 10px;
+      outline: none;
+      font-size: 16px;
+      width: 280px;
+      transition: box-shadow 0.3s ease;
+
+}
+.input-field:focus{
+  box-shadow: 0 0 5px 1px rgba(255, 0, 255, 0.6);
+}
+.submit-button {
+  padding: 0.75rem;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.submit-button.doctor {
+  background-color: #2563eb;
+}
+
+.submit-button.patient {
+  background-color: #10b981;
+}
+
+.submit-button.pathologist {
+  background-color: #8b5cf6;
+}
+
+.role-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.role-buttons button {
+  background-color: #d1d5db;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Fade transition classes */
+.fade-enter {
+  opacity: 0;
+  transform: scale(0.95);
+}
+.fade-enter-active {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 300ms ease-in-out, transform 300ms ease-in-out;
+}
+.fade-exit {
+  opacity: 1;
+  transform: scale(1);
+}
+.fade-exit-active {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 300ms ease-in-out, transform 300ms ease-in-out;
+}
+.register-btn {
+  width: 20vw;
+}
+.register-btn button{
+  margin: 2vw;
+    background-color: #d1d5db;
+    width: 100%;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
