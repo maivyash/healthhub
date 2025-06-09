@@ -1,9 +1,15 @@
-import logo from "./logo.svg";
 import "./App.css";
+import { Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/login";
+import RegisterPage from "./pages/RegisterPage";
 
 function App() {
-  return <LoginPage />;
+  return (
+    <Routes>
+      <Route path="/" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+    </Routes>
+  );
 }
 
 export default App;
