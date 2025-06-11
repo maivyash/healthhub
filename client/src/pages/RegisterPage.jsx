@@ -164,7 +164,7 @@ const RegisterPage = () => {
               </button>
               <button
                 className="btn"
-                onClick={() => navigate("/", { replace: true })}
+                onClick={() => navigate("/login", { replace: true })}
               >
                 Already Registered? Sign in
               </button>

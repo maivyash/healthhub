@@ -17,13 +17,15 @@
   width: 100vw;
   height: 100vh;
   z-index: -1; /* Behind everything */
-  background-image: url('../asset/bc-login.png'); /* Update with your file path */
+  background-image: url('../asset/bc-login.png') ; /* Update with your file path */
   background-repeat: repeat-x;
   background-size: contain;
   animation: scrollBackground 30s linear infinite;
 }
 
-
+.login-page{
+  z-index: 2;
+}
 
 .login-container {
   display: flex;

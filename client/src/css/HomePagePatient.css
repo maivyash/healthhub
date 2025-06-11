@@ -1,0 +1,41 @@
+/* Apply to home page only */
+.homepage {
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-color: white;
+  padding-top: 70px; /* height of fixed navbar */
+}
+
+/* Fixed diagonal pattern background */
+.fixed-background {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 100vw;
+  height: 100vh;
+  background-image: repeating-linear-gradient(
+    135deg,
+    #ece5d9 0,
+    #ece5d9 60px,
+    transparent 60px,
+    transparent 120px
+  );
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* Ensure scrolling doesn’t shift navbar */
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: white;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}

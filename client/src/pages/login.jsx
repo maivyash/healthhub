@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import "../css/loginpage.css";
+import { toast } from "react-toastify";
 
 const DoctorForm = () => (
   <form className="form-container">
@@ -11,7 +12,14 @@ const DoctorForm = () => (
       className="input-field"
     />
     <input type="password" placeholder="Password" className="input-field" />
-    <button className="submit-button doctor">Sign In</button>
+    <button
+      onClick={() => {
+        toast.success("login");
+      }}
+      className="submit-button doctor"
+    >
+      Sign In
+    </button>
   </form>
 );
 
@@ -37,7 +45,7 @@ const PathologistForm = () => (
 
 const LoginPage = () => {
   const [role, setRole] = useState("doctor");
-  const navigate = useNavigate();
+  var navigate = useNavigate();
 
   // Separate refs for image and form transitions
   const imageRef = useRef(null);
