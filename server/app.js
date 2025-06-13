@@ -3,9 +3,15 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+const registerRouter = require("./routes/register");
+const cors = require("cors");
+const { default: mongoose } = require("mongoose");
+const loginRouter = require("./routes/login");
 
 var app = express();
 
+app.use(cors());
+app.use(express.json());
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -13,8 +19,10 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 //main start
+app.use("/register", registerRouter);
+app.use("/login", loginRouter);
 app.get("/", (req, res) => {
-  res.send("helbnlfnkfnklo");
+  res.json({ error: "Your Access is Denied" });
 });
 
 //main ends
@@ -23,6 +31,10 @@ app.use(function (req, res, next) {
   next(createError(404));
 });
 
+mongoose.connect("mongodb://127.0.0.1:27017/HealthHub", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 // error handler
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development

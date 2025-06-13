@@ -4,6 +4,7 @@
     height: 100vh;
     justify-content: space-around;
     align-items: center;
+    justify-content: center;
     position: fixed; /* Or absolute, depending on your layout */
   top: 0;
   left: 0;

@@ -1,28 +1,40 @@
+
 .hero-section {
   background-image: url("../asset/herohomebc.png");
   background-repeat:round;
-  background-size: contain;
-  background-position:bottom;
+  background-attachment: fixed;
+  background-size: cover;
+  background-position:center;
   z-index: -1;
   display: flex;
   flex-wrap: wrap;
-  margin-top: 80px;
-  min-height: 80vh;
-  justify-content: space-between;
+  margin-top: 70px;
+  min-height: 100vh;
+  max-height: 100vh;
+  justify-content: center;
   width: 100%;
+  font-family: 'Inter', sans-serif;
+
 }
 
 .hero-content {
-
-  width: 40%;
-  margin-left: 10vw;
+  width: 100%;
+  padding-left: 10vw;
   margin-bottom: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.hero-image img {
+  max-width: 600px;
+  border-radius: 10px;
 }
 .fingertips{
   margin: 0;
-  color: rgb(182, 176, 159);
+  color: rgb(0, 0, 0);
   -webkit-text-stroke: 1px black;
   margin-left: 7vw;
+  padding-bottom: 6.5vh;
 }
 .hero-content h1 {
   font-size: 3.5rem;
@@ -47,8 +59,96 @@
   font-size: 0.9rem;
   font-weight: 500;
 }
+.card img{
+  max-width:  8vw;
+  min-width: 6vw;
+  margin-top: 2vh;
+  max-height: 10vh;
+}
+.card button{
+  margin-top: 2vh;
+  padding: 8px;
+  border-radius: 20px;
+  background-color: rgb(182, 176, 159);
+  font-weight: 50px;
+  border: none;
+  
+}
+.cardfx {
+  height: 25vh;
+  background-color: #f2f2f2;
+  padding: 20px;
+  border-radius: 20px;
+  width: 140px;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+.cardfx img{
+  max-width:  8vw;
+  min-width: 6vw;
+  margin-top: 2vh;
+  max-height: 10vh;
+}
+.cardfx div{
+  min-height: 18vh;
+}
+.cardfx button{
+  margin-top: 2vh;
+  padding: 8px;
+  border-radius: 20px;
+  width: 10vw;
+  background-color: rgb(182, 176, 159);
+  font-weight: 50px;
+  border: none;
+  
+}
 
-.hero-image img {
-  max-width: 600px;
-  border-radius: 10px;
+
+
+
+.weProvide{
+  flex-direction: column;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+#Contact_Me{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+#Email_contact{
+    font-size: clamp(4px,8vw,16px);
+  color: black;
+  text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 5vw;
+    justify-content: flex-start;
+    background-color: rgb(182, 176, 159);
+    align-items: center;
+
+
+}
+.row{
+  margin: 0vh;
+    display: flex;
+    flex-direction: row;
+}
+.row span{
+  margin: 0;
+  margin-top: 5px;
+}
+
+.row p{
+margin: 5px;
+}
+.email{
+  text-decoration: underline;
+  color: blue;
 }

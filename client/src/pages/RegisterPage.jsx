@@ -67,7 +67,7 @@ const RegisterPage = () => {
 
   const sendToBackend = async (data) => {
     try {
-      const response = await fetch("http://localhost:5000/register", {
+      const response = await fetch("http://localhost:8000/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -78,9 +78,21 @@ const RegisterPage = () => {
       const result = await response.json();
       if (response.ok) {
         toast.success("Registration successful!");
-        setTimeout(() => navigate("/home", { replace: true }), 1000);
+        setTimeout(() => navigate("/", { replace: true }), 1000);
       } else {
-        toast.error(result.message || "Registration failed");
+        switch (response.status) {
+          case 409:
+            toast.error("Email already registered!");
+            break;
+          case 406:
+            toast.error("Invalid role");
+            break;
+          case 500:
+            toast.error("Server error");
+            break;
+          default:
+            toast.error(result.message || "Something went wrong");
+        }
       }
     } catch (err) {
       toast.error("Failed to connect to server");
@@ -109,6 +121,8 @@ const RegisterPage = () => {
             <h2>Doctor Registration</h2>
             {renderInput("fullName", "Full Name")}
             {renderInput("email", "Email", "email")}
+            {renderInput("password", "Password", "password")}
+
             {renderInput("specialization", "Specialization")}
             {renderInput("license", "License Number")}
             {renderInput("experience", "Years of Experience")}
@@ -121,6 +135,8 @@ const RegisterPage = () => {
             {renderInput("fullName", "Full Name")}
             {renderInput("labName", "Lab Name")}
             {renderInput("email", "Email", "email")}
+            {renderInput("password", "Password", "password")}
+
             {renderInput("qualification", "Qualification")}
             {renderInput("license", "Lab License Number")}
           </>
@@ -131,6 +147,8 @@ const RegisterPage = () => {
             <h2>Patient Registration</h2>
             {renderInput("fullName", "Full Name")}
             {renderInput("email", "Email", "email")}
+            {renderInput("password", "Password", "password")}
+
             {renderInput("age", "Age")}
             {renderInput("gender", "Gender")}
             {renderInput("medicalHistory", "Medical History")}

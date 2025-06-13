@@ -6,11 +6,13 @@ import HomePagePatient from "./pages/HomePagePatients";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<HomePagePatient />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/" element={<HomePagePatient />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+      </Routes>
+    </>
   );
 }
 
