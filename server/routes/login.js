@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../model/userModel");
 
 const loginRouter = express.Router();
-const JWT_SECRET = "eknumbertujhikambarchallshekasheki"; // Move to .env in production
+const JWT_SECRET = "eknumbertujhikambarchallshekasheki";
 
 loginRouter.post("/", async (req, res) => {
   try {
@@ -36,6 +36,7 @@ loginRouter.post("/", async (req, res) => {
     res.status(200).json({
       message: "Login successful",
       token,
+      role: user.role,
       user: {
         id: user._id,
         email: user.email,

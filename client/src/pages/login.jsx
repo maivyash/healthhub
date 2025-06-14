@@ -67,7 +67,8 @@ const LoginPage = () => {
         case 200:
           toast.success(result.message || "Login successful");
 
-          document.cookie = `token=${result.token}; path=/; max-age=3600`;
+          document.cookie = `token=${result.user}; path=/; max-age=3600`;
+          document.cookie = `role=${result.role}; path=/; max-age=3600`;
 
           navigate("/", { replace: true }, 1000);
           break;
