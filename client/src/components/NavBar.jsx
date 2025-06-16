@@ -42,7 +42,13 @@ const Navbar = () => {
           <div className="nav-links">
             <button>Home</button>
             <button>Rooms</button>
-            <button>Reports</button>
+            <button
+              onClick={() => {
+                navigate("/reports");
+              }}
+            >
+              Reports
+            </button>
           </div>
 
           <div className="rightfx">

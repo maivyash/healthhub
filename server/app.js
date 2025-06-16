@@ -7,6 +7,8 @@ const registerRouter = require("./routes/register");
 const cors = require("cors");
 const { default: mongoose } = require("mongoose");
 const loginRouter = require("./routes/login");
+const reports = require("./routes/reports");
+const summaryRouter = require("./routes/summary");
 
 var app = express();
 
@@ -21,6 +23,9 @@ app.use(express.static(path.join(__dirname, "public")));
 //main start
 app.use("/register", registerRouter);
 app.use("/login", loginRouter);
+app.use("/reports", reports);
+app.use("/summary", summaryRouter);
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.get("/", (req, res) => {
   res.json({ error: "Your Access is Denied" });
 });
