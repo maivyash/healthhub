@@ -1,6 +1,9 @@
+// Analysis.js
 import { useEffect, useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
-
+import Spinner from "../components/spinner";
+import "../css/Analysis.css";
 import {
   LineChart,
   Line,
@@ -17,48 +20,59 @@ const Analysis = () => {
   const [allKeys, setAllKeys] = useState([]);
   const [selectedKey, setSelectedKey] = useState("");
   const [graphData, setGraphData] = useState([]);
-
-  // Step 1: Fetch Gemini summary data
   const [summary, setSummary] = useState("");
   const [plans, setPlans] = useState({ exercise: [], diet: [] });
   const [completed, setCompleted] = useState({});
-
-  useEffect(() => {
-    const fetchAIData = async () => {
-      const res = await axios.get("http://localhost:8000/summary/ai");
-      setSummary(res.data.summary || "No summary available.");
-      setPlans(res.data.plan || { exercise: [], diet: [] });
-    };
-    fetchAIData();
-  }, []);
+  const [loading, setLoading] = useState(true);
 
   const toggleCheck = (type, dayIndex) => {
     const key = `${type}_${dayIndex}`;
     setCompleted((prev) => ({ ...prev, [key]: !prev[key] }));
   };
+
+  useEffect(() => {
+    const fetchAIData = async () => {
+      try {
+        const res = await axios.get("http://localhost:8000/summary/ai");
+        if (res.status === 500) {
+          toast.error(res.data.error || "Server went Upset");
+          return;
+        }
+        setSummary(res.data.summary || "No insights available.");
+        setPlans(res.data.plan || { exercise: [], diet: [] });
+      } catch (err) {
+        console.error("AI summary fetch failed");
+      }
+    };
+    fetchAIData();
+  }, []);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await axios.get("http://localhost:8000/summary");
+        if (res.status === 500) {
+          toast.error(res.data.error || "Server went Upset");
+          return;
+        }
         const data = res.data || [];
-
         setAiSummarizedData(data);
 
         const keys = data.map((item) => item.parameter);
         setAllKeys(keys);
         if (keys.length > 0) setSelectedKey(keys[0]);
       } catch (err) {
-        console.error("Error fetching summary:", err);
+        toast.error("Summary data fetch failed");
+        console.error("Summary data fetch failed");
+      } finally {
+        setLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
-  // Step 2: When selectedKey changes, filter data for that parameter
   useEffect(() => {
     if (!selectedKey) return;
-
     const item = aiSummarizedData.find(
       (entry) => entry.parameter === selectedKey
     );
@@ -66,7 +80,6 @@ const Analysis = () => {
       setGraphData([]);
       return;
     }
-
     const cleaned = item.values
       .map((v) => ({
         date: new Date(v.date).toISOString().split("T")[0],
@@ -84,122 +97,95 @@ const Analysis = () => {
   }, [selectedKey, aiSummarizedData]);
 
   return (
-    <div style={{ padding: "2rem" }}>
-      <h2>📊 AI-Powered Medical Trends</h2>
+    <div className="analysis-container">
+      <h2 className="headline">📊 Your Health Trends</h2>
 
-      {/* Dropdown */}
-      <div style={{ marginBottom: "1rem" }}>
-        <label>
-          Select Parameter:{" "}
-          <select
-            value={selectedKey}
-            onChange={(e) => setSelectedKey(e.target.value)}
-          >
-            {allKeys.map((key) => (
-              <option key={key} value={key}>
-                {key.toUpperCase().replace(/_/g, " ")}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
-
-      {/* Chart */}
-      {graphData.length > 0 ? (
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={graphData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" />
-            <YAxis allowDecimals />
-            <Tooltip />
-            <Legend />
-            <Line
-              type="monotone"
-              dataKey="value"
-              stroke="#28a745"
-              name={selectedKey}
-              strokeWidth={2}
-              dot={{ r: 4 }}
-            />
-          </LineChart>
-        </ResponsiveContainer>
+      {loading ? (
+        <Spinner />
       ) : (
-        <p>No data available for this parameter</p>
+        <>
+          <div className="dropdown-wrapper">
+            <label>Select Parameter:</label>
+            <select
+              value={selectedKey}
+              onChange={(e) => setSelectedKey(e.target.value)}
+              className="dropdown"
+            >
+              {allKeys.map((key) => (
+                <option key={key} value={key}>
+                  {key.toUpperCase().replace(/_/g, " ")}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="chart-box">
+            {graphData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={graphData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="date" />
+                  <YAxis allowDecimals />
+                  <Tooltip />
+                  <Legend />
+                  <Line
+                    type="monotone"
+                    dataKey="value"
+                    stroke="#28a745"
+                    strokeWidth={2}
+                    dot={{ r: 4 }}
+                    name={selectedKey}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            ) : (
+              <p className="nodata">No data available for this parameter</p>
+            )}
+          </div>
+
+          <div className="summary-card">
+            <h3>🧠 AI Health Insight</h3>
+            <p>{summary}</p>
+          </div>
+
+          <div className="plan-container">
+            <div className="plan-header">
+              <h4>🏃‍♂️ Your 7-Day Exercise Plan</h4>
+              <h4>🥗 Your 7-Day Diet Plan</h4>
+            </div>
+            <div className="plan-grid">
+              <div>
+                {plans.exercise.map((item, index) => (
+                  <div className="plan-box" key={index}>
+                    <span>
+                      Day {index + 1}: {item}
+                    </span>
+                    <input
+                      type="checkbox"
+                      checked={!!completed[`exercise_${index}`]}
+                      onChange={() => toggleCheck("exercise", index)}
+                    />
+                  </div>
+                ))}
+              </div>
+              <div>
+                {plans.diet.map((item, index) => (
+                  <div className="plan-box" key={index}>
+                    <span>
+                      Day {index + 1}: {item}
+                    </span>
+                    <input
+                      type="checkbox"
+                      checked={!!completed[`diet_${index}`]}
+                      onChange={() => toggleCheck("diet", index)}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </>
       )}
-      <div style={{ padding: "2rem" }}>
-        <h3 style={{ border: "1px solid black", padding: "1rem" }}>
-          TEXT SUMMARY IN 100 words about my health
-        </h3>
-        <p style={{ marginTop: "1rem" }}>{summary}</p>
-
-        <div style={{ background: "#ddd", padding: "2rem", marginTop: "2rem" }}>
-          <div
-            style={{ display: "flex", justifyContent: "center", gap: "2rem" }}
-          >
-            <h4>EXERCISE PLAN</h4>
-            <h4>DIET PLAN</h4>
-          </div>
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(2, 1fr)",
-              gap: "1rem",
-              marginTop: "1rem",
-            }}
-          >
-            <div>
-              {plans.exercise.map((item, index) => (
-                <div
-                  key={index}
-                  style={{
-                    border: "1px solid black",
-                    padding: "1rem",
-                    background: "#fff",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <span>
-                    Day {index + 1}: {item}
-                  </span>
-                  <input
-                    type="checkbox"
-                    checked={!!completed[`exercise_${index}`]}
-                    onChange={() => toggleCheck("exercise", index)}
-                  />
-                </div>
-              ))}
-            </div>
-
-            <div>
-              {plans.diet.map((item, index) => (
-                <div
-                  key={index}
-                  style={{
-                    border: "1px solid black",
-                    padding: "1rem",
-                    background: "#fff",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <span>
-                    Day {index + 1}: {item}
-                  </span>
-                  <input
-                    type="checkbox"
-                    checked={!!completed[`diet_${index}`]}
-                    onChange={() => toggleCheck("diet", index)}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };

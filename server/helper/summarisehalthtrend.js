@@ -61,7 +61,7 @@ function deduplicateParameters(data) {
 }
 
 async function summarizeHealthTrends(reportData) {
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
   const prompt = `
 You are a medical data analyst AI. Given extracted medical reports in JSON format, analyze and summarize the top 10 most important health metrics — even if labeled differently (e.g., "WBC", "White Blood Cell", "Total Leukocyte Count").

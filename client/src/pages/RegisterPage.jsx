@@ -161,7 +161,6 @@ const RegisterPage = () => {
 
   return (
     <div className="main-rg">
-      <ToastContainer position="top-right" autoClose={2000} />
       <div className="register-page">
         <div className="left-image">
           {role && <img src={images[role]} alt="Role Visual" />}

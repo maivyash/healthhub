@@ -2,10 +2,14 @@ import React, { useRef, useState, useEffect } from "react";
 import { replace, useNavigate } from "react-router-dom";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { toast, ToastContainer } from "react-toastify";
+import { useAuth } from "../components/AuthAutorization";
+
+// after successful login:
 
 import "../css/loginpage.css";
 
 const LoginPage = () => {
+  const { user, setUser } = useAuth();
   const [role, setRole] = useState("doctor");
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [formErrors, setFormErrors] = useState({});
@@ -13,7 +17,11 @@ const LoginPage = () => {
   const imageRef = useRef(null);
   const formRef = useRef(null);
   const navigate = useNavigate();
-
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
   useEffect(() => {
     const firstErrorKey = Object.keys(formErrors)[0];
     if (firstErrorKey && inputRefs.current[firstErrorKey]) {
@@ -66,8 +74,8 @@ const LoginPage = () => {
       switch (response.status) {
         case 200:
           toast.success(result.message || "Login successful");
-
-          document.cookie = `token=${result.user}; path=/; max-age=3600`;
+          setUser(result.user);
+          document.cookie = `token=${result.token}; path=/; max-age=3600`;
           document.cookie = `role=${result.role}; path=/; max-age=3600`;
 
           navigate("/", { replace: true }, 1000);
@@ -142,7 +150,6 @@ const LoginPage = () => {
 
   return (
     <div className="bc-image">
-      <ToastContainer position="top-center" autoClose={3000} />
       <div className="login-page">
         <div className="login-container">
           <div className="logo-section">

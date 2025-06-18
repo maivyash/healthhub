@@ -17,7 +17,7 @@
   width: 100vw;
   height: 100vh;
   z-index: -1;
-  background-image: url('../asset/bc-login.png');
+  background-image: url('../asset/bc-login-new.png');
   background-repeat: repeat-x;
   background-size: contain;
   animation: scrollBackground 30s linear infinite;

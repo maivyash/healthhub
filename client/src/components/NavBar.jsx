@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
 import "../css/NavBar.css";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../components/AuthAutorization";
+const JWTsecretKey = "eknumbertujhikambarchallshekasheki";
 
 const Navbar = () => {
-  const [role, setRole] = useState(""); // Initially empty
+  const { user } = useAuth();
+  const [name, setName] = useState("Login/Register"); // Initially empty
   const navigate = useNavigate();
 
   // Helper to get cookie by name
@@ -15,21 +18,8 @@ const Navbar = () => {
   }
 
   // Check login and update state
-  function checkLoggedIn() {
-    const token = getCookie("token");
-    const userRole = getCookie("role");
-
-    if (token && userRole) {
-      setRole(userRole);
-    } else {
-      setRole(""); // Not logged in
-    }
-  }
 
   // Run checkLoggedIn once on component mount
-  useEffect(() => {
-    checkLoggedIn();
-  }, []);
 
   return (
     <div>
@@ -40,8 +30,20 @@ const Navbar = () => {
 
         <div className="navs">
           <div className="nav-links">
-            <button>Home</button>
-            <button>Rooms</button>
+            <button
+              onClick={() => {
+                navigate("/");
+              }}
+            >
+              Home
+            </button>
+            <button
+              onClick={() => {
+                navigate("/rooms");
+              }}
+            >
+              Rooms
+            </button>
             <button
               onClick={() => {
                 navigate("/reports");
@@ -56,15 +58,14 @@ const Navbar = () => {
               <input type="text" placeholder="Search here" />
             </div>
 
-            {role ? (
+            {user ? (
               <button
                 className="login-btn"
                 onClick={(e) => {
                   e.preventDefault();
-                  navigate("/about");
                 }}
               >
-                {role.charAt(0).toUpperCase() + role.slice(1)}
+                {user.name.charAt(0).toUpperCase() + user.name.slice(1)}
               </button>
             ) : (
               <button
