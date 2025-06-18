@@ -26,7 +26,10 @@
   justify-content: space-between;
 }
 .hero-image img {
-  max-width: 600px;
+  
+position: absolute;
+right: -20px;
+  max-width: 650px;
   border-radius: 10px;
 }
 .fingertips{
