@@ -10,6 +10,7 @@ const reportSchema = new mongoose.Schema({
 });
 
 const fileSchema = new mongoose.Schema({
+  patientId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   name: String,
   type: String,
   path: String,

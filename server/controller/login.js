@@ -27,7 +27,7 @@ const loginPoster = async (req, res) => {
 
     // Generate token
     const token = jwt.sign(
-      { id: user._id, role: user.role, name: user.fullName },
+      { id: user._id, role: user.role, name: user.fullName, role: user.role },
       JWT_SECRET,
       {
         expiresIn: "1d",

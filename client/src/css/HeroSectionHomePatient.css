@@ -29,7 +29,8 @@
   
 position: absolute;
 right: -20px;
-  max-width: 650px;
+margin-top: 5vh;
+  max-width: 45vw;
   border-radius: 10px;
 }
 .fingertips{

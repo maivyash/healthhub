@@ -73,6 +73,13 @@ const LoginPage = () => {
       const result = await response.json();
       switch (response.status) {
         case 200:
+          console.log(role);
+          console.log(result.role);
+
+          if (!(role === result.role)) {
+            toast.error("User is not a " + role);
+            return;
+          }
           toast.success(result.message || "Login successful");
           setUser(result.user);
           document.cookie = `token=${result.token}; path=/; max-age=3600`;

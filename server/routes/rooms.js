@@ -71,39 +71,57 @@ roomRouter.post("/", async (req, res) => {
   }
 });
 
-//getter or fetyching rooms
-
 roomRouter.get("/", async (req, res) => {
-  const { createdby } = req.query;
+  const { createdby, doctorId, pathologyId } = req.query;
 
-  // Validate input
-  if (!createdby || !mongoose.Types.ObjectId.isValid(createdby)) {
-    return res.status(424).json({ error: "Invalid or missing 'createdby' ID" });
+  let filter = {};
+  if (createdby) {
+    if (!mongoose.Types.ObjectId.isValid(createdby)) {
+      return res.status(424).json({ error: "Invalid 'createdby' ID" });
+    }
+    filter.createdby = createdby;
+  }
+
+  if (doctorId) {
+    if (!mongoose.Types.ObjectId.isValid(doctorId)) {
+      return res.status(424).json({ error: "Invalid 'doctorId' ID" });
+    }
+    filter.doctorId = doctorId;
+  }
+
+  if (pathologyId) {
+    if (!mongoose.Types.ObjectId.isValid(pathologyId)) {
+      return res.status(424).json({ error: "Invalid 'pathologyId' ID" });
+    }
+    filter.pathologyId = pathologyId;
+  }
+
+  // If no filter at all, reject request
+  if (Object.keys(filter).length === 0) {
+    return res.status(400).json({ error: "Missing query parameters" });
   }
 
   try {
-    const rooms = await Room.find({ createdby })
+    const rooms = await Room.find(filter)
+      .populate("createdby", "fullName")
       .populate("doctorId", "fullName")
       .populate("pathologyId", "fullName")
       .sort({ createdAt: -1 });
 
-    if (!rooms || rooms.length === 0) {
-      return res.status(200).json([]); // ✅ send empty array
-    }
-
     const formattedRooms = rooms.map((room) => ({
       _id: room._id,
       roomName: room.roomName,
-      doctor: room.doctorId?.fullName || "Unknown Doctor",
+      doctor: room.doctorId?.fullName || "Unknown Doctor", //changed
       pathology: room.pathologyId?.fullName || "Unknown Lab",
+      patient: room.createdby?.fullName || "Unknown Patient",
       createdOn: room.createdAt,
+      createdby: room.createdby?._id,
     }));
-    console.log(formattedRooms);
 
     return res.status(200).json(formattedRooms);
   } catch (err) {
     console.error("Error fetching rooms:", err);
-    return res.status(424).json({ error: "Failed to fetch rooms" });
+    return res.status(500).json({ error: "Failed to fetch rooms" });
   }
 });
 

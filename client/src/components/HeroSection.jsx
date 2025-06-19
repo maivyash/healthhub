@@ -1,11 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../css/HeroSectionHomePatient.css";
 import doctorsImage from "../asset/doctors.png";
 import supportImage from "../asset/support.jpg";
 import graphImage from "../asset/graph.jpg";
 import aiImage from "../asset/AI.jpg";
+import { useAuth } from "../components/AuthAutorization";
 
 const HeroSection = () => {
+  const { user, loading } = useAuth();
+  const [localUser, setLocalUser] = useState({});
+  useEffect(() => {
+    if (loading) {
+      return;
+    }
+    if (!user) {
+      return;
+    }
+    console.log(user);
+
+    if (!user.role) {
+      return;
+    }
+    setLocalUser(user);
+  }, [loading, user, setLocalUser]);
   return (
     <div className="bcimage">
       <div className="hero-section">
@@ -53,71 +70,128 @@ const HeroSection = () => {
 
         <div className="weProvide" s>
           <h1>We Provide</h1>
-          <div className="features">
-            <div className="cardfx">
-              <div>
-                🎥
-                <br />
-                book doctors
-                <br />
-                x consultation videochat
-                <br />
-                online
-                <br />
+          {localUser.role === "doctor" ? (
+            <div className="features">
+              <div className="cardfx">
+                <div>
+                  🎥
+                  <br />
+                  View Online
+                  <br />
+                  consultation videochat
+                  <br />
+                  Requests
+                  <br />
+                </div>
+                <button>View Now</button>
               </div>
-              <button>Book Now</button>
+              <div className="cardfx">
+                <div>
+                  🏥
+                  <br />
+                  View offline medical
+                  <br />
+                  consultation
+                  <br />
+                </div>
+
+                <button>View Now</button>
+              </div>
+              <div className="cardfx">
+                <div>
+                  🏡
+                  <br />
+                  View doorstep medical
+                  <br />
+                  checkup
+                  <br />
+                </div>
+
+                <button>View Now</button>
+              </div>
             </div>
-            <div className="cardfx">
-              <div>
-                🏥
-                <br />
-                book offline medical
-                <br />
-                consultation
-                <br />
+          ) : localUser.role === "pathologist" ? (
+            <div className="features">
+              <div className="cardfx">
+                <div>
+                  🏡
+                  <br />
+                  book doorstep medical
+                  <br />
+                  checkup
+                  <br />
+                </div>
+
+                <button>Create Plan</button>
+              </div>
+            </div>
+          ) : (
+            <div className="features">
+              <div className="cardfx">
+                <div>
+                  🎥
+                  <br />
+                  book doctors
+                  <br />
+                  x consultation videochat
+                  <br />
+                  online
+                  <br />
+                </div>
+                <button>Book Now</button>
+              </div>
+              <div className="cardfx">
+                <div>
+                  🏥
+                  <br />
+                  book offline medical
+                  <br />
+                  consultation
+                  <br />
+                </div>
+
+                <button>Book Now</button>
+              </div>
+              <div className="cardfx">
+                <div>
+                  🏡
+                  <br />
+                  book doorstep medical
+                  <br />
+                  checkup
+                  <br />
+                </div>
+
+                <button>Book Now</button>
               </div>
 
-              <button>Book Now</button>
-            </div>
-            <div className="cardfx">
-              <div>
-                🏡
-                <br />
-                book doorstep medical
-                <br />
-                checkup
-                <br />
+              <div className="cardfx">
+                <div>
+                  🏪
+                  <br /> Rooms for any
+                  <br />
+                  specific health issue
+                  <br />
+                  personal assistance
+                  <br />
+                </div>
+
+                <button>Create Now</button>
               </div>
+              <div className="cardfx">
+                <div>
+                  🏡
+                  <br />
+                  book doorstep medical
+                  <br />
+                  checkup
+                  <br />
+                </div>
 
-              <button>Book Now</button>
-            </div>
-
-            <div className="cardfx">
-              <div>
-                🏪
-                <br /> Rooms for any
-                <br />
-                specific health issue
-                <br />
-                personal assistance
-                <br />
+                <button>Create Plan</button>
               </div>
-
-              <button>Create Now</button>
             </div>
-            <div className="cardfx">
-              <div>
-                🏡
-                <br />
-                book doorstep medical
-                <br />
-                checkup
-                <br />
-              </div>
-
-              <button>Create Plan</button>
-            </div>
-          </div>
+          )}
         </div>
         <div>
           <div id="Email_contact">

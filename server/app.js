@@ -11,6 +11,7 @@ const reports = require("./routes/reports");
 const summaryRouter = require("./routes/summary");
 const userRouter = require("./routes/users");
 const roomRouter = require("./routes/rooms");
+const chatRouter = require("./routes/chat");
 
 var app = express();
 
@@ -29,6 +30,7 @@ app.use("/reports", reports);
 app.use("/summary", summaryRouter);
 app.use("/users", userRouter);
 app.use("/rooms", roomRouter);
+app.use("/chat", chatRouter);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.get("/", (req, res) => {
   res.json({ error: "Your Access is Denied" });
