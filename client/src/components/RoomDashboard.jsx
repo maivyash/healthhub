@@ -36,13 +36,15 @@ const RoomsDashboard = () => {
           _id: item._id,
           roomName: item.roomName,
           doctor: item.doctor,
-          doctorId: item.doctorId,
-          pathologyId: item.pathologyId,
+          doctorId: item.doctorId._id,
+          pathologyId: item.pathologyId._id,
           createdOn: item.createdOn,
           pathology: item.pathology,
           mobile: item.mobilenumber,
           createdBy: item.createdby,
         }));
+        console.log(mappedRooms);
+
         setRooms(mappedRooms);
       } else {
         toast.error(data.error || "Something went wrong");

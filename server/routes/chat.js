@@ -98,7 +98,6 @@ chatRouter.post("/send", upload.single("file"), async (req, res) => {
         path,
         file: req.file.mimetype,
       });
-      console.log("Schema file type:", ChatMessage.schema.path("file"));
 
       await message.save();
       res.status(200).json(message);

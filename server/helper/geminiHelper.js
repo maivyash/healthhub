@@ -25,6 +25,9 @@ Return a JSON response like:
   },
   "reportDate": "2023-02-20"
 }
+  if (report is not medical based) {
+    return null
+  }
 Here is the medical report text:
 """
 ${pdfText}

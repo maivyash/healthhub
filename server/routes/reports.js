@@ -34,6 +34,9 @@ const cleanParameters = (params) => {
 };
 
 reports.post("/upload", (req, res, next) => {
+  const { userId } = req.query;
+  console.log("userId" + userId);
+
   upload.single("file")(req, res, async (err) => {
     if (err instanceof multer.MulterError || err) {
       return res.status(400).json({ error: err.message });
@@ -59,8 +62,8 @@ reports.post("/upload", (req, res, next) => {
 
       if (!aiExtracted) {
         return res
-          .status(500)
-          .json({ error: "Gemini failed to extract content." });
+          .status(424)
+          .json({ error: "Medical report is not valid format." });
       }
 
       // ✅ Normalize output
@@ -81,6 +84,7 @@ reports.post("/upload", (req, res, next) => {
         name: req.file.originalname,
         type: req.file.mimetype,
         path: filePath,
+        patientId: userId,
         uploadDate: new Date(),
         extractedReports,
       });
@@ -103,8 +107,25 @@ reports.post("/upload", (req, res, next) => {
 });
 
 reports.get("/files", async (req, res) => {
-  const files = await File.find();
-  res.json(files);
+  const { patient, pathologist, doctor } = req.query;
+
+  if (patient) {
+    const files = await File.find({ patientId: patient });
+
+    res.json(files);
+  } else if (doctor) {
+    const files = await File.find({ doctorId: doctor })
+      .populate("patientId", "fullName")
+      .populate("doctorId", "fullName")
+      .populate("pathologyId", "fullName");
+    res.json(files);
+  } else if (pathologist) {
+    const files = await File.find({ pathologyId: pathologist })
+      .populate("patientId", "fullName")
+      .populate("doctorId", "fullName")
+      .populate("pathologyId", "fullName");
+    res.json(files);
+  }
 });
 
 module.exports = reports;

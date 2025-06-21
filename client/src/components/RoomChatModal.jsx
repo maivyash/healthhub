@@ -28,20 +28,21 @@ const RoomChat = ({ roomId, roomData, onClose }) => {
       toast.warn("Please type a message or upload a file");
       return;
     }
-
+    console.log("Dcotr id befor form subbmition" + roomData.doctorId); //roomData.doctorId is returning id clearly
     const formData = new FormData();
     formData.append("text", newMessage);
     formData.append("roomId", roomId);
     formData.append("sentBy", user.id);
-    formData.append("doctorId:", roomData.doctorId);
-    formData.append("pathologyId:", roomData.pathologyId);
+
+    formData.append("doctorId", roomData.doctorId);
+    formData.append("pathologyId", roomData.pathologyId);
 
     formData.append("senderName", user.name);
     formData.append("senderRole", user.role);
     formData.append("patientId", roomData.createdBy);
+    console.log(formData.get("doctorId"));
 
     if (file) formData.append("file", file);
-
     try {
       const res = await axios.post("http://localhost:8000/chat/send", formData);
       if (!(res.status === 200)) {
