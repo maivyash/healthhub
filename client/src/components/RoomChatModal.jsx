@@ -33,9 +33,13 @@ const RoomChat = ({ roomId, roomData, onClose }) => {
     formData.append("text", newMessage);
     formData.append("roomId", roomId);
     formData.append("sentBy", user.id);
+    formData.append("doctorId:", roomData.doctorId);
+    formData.append("pathologyId:", roomData.pathologyId);
+
     formData.append("senderName", user.name);
     formData.append("senderRole", user.role);
     formData.append("patientId", roomData.createdBy);
+
     if (file) formData.append("file", file);
 
     try {

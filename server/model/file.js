@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+delete mongoose.models.File;
 
 const reportSchema = new mongoose.Schema({
   reportType: String,
@@ -11,6 +12,8 @@ const reportSchema = new mongoose.Schema({
 
 const fileSchema = new mongoose.Schema({
   patientId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  doctorId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  pathologyId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   name: String,
   type: String,
   path: String,

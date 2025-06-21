@@ -112,6 +112,8 @@ roomRouter.get("/", async (req, res) => {
       _id: room._id,
       roomName: room.roomName,
       doctor: room.doctorId?.fullName || "Unknown Doctor", //changed
+      doctorId: room.doctorId,
+      pathologyId: room.pathologyId,
       pathology: room.pathologyId?.fullName || "Unknown Lab",
       patient: room.createdby?.fullName || "Unknown Patient",
       createdOn: room.createdAt,

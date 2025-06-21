@@ -71,7 +71,7 @@ const HeroSection = () => {
         <div className="weProvide" s>
           <h1>We Provide</h1>
           {localUser.role === "doctor" ? (
-            <div className="features">
+            <div className="features fade-in">
               <div className="cardfx">
                 <div>
                   🎥
@@ -111,7 +111,7 @@ const HeroSection = () => {
               </div>
             </div>
           ) : localUser.role === "pathologist" ? (
-            <div className="features">
+            <div className="features fade-in">
               <div className="cardfx">
                 <div>
                   🏡
@@ -126,7 +126,7 @@ const HeroSection = () => {
               </div>
             </div>
           ) : (
-            <div className="features">
+            <div className="features fade-in">
               <div className="cardfx">
                 <div>
                   🎥

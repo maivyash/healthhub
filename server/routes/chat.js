@@ -22,7 +22,15 @@ const upload = multer({
 
 chatRouter.post("/send", upload.single("file"), async (req, res) => {
   try {
-    const { text, sentBy, patientId, roomId, senderName } = req.body;
+    const {
+      text,
+      sentBy,
+      patientId,
+      roomId,
+      senderName,
+      doctorId,
+      pathologyId,
+    } = req.body;
     if (!text && !req.file) {
       return res
         .status(400)
@@ -49,6 +57,8 @@ chatRouter.post("/send", upload.single("file"), async (req, res) => {
       }
 
       const fileRecord = new File({
+        pathologyId: pathologyId,
+        doctorId: doctorId,
         patientId: patientId,
         name: req.file.originalname,
         type: req.file.mimetype,

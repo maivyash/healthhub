@@ -36,6 +36,8 @@ const RoomsDashboard = () => {
           _id: item._id,
           roomName: item.roomName,
           doctor: item.doctor,
+          doctorId: item.doctorId,
+          pathologyId: item.pathologyId,
           createdOn: item.createdOn,
           pathology: item.pathology,
           mobile: item.mobilenumber,
