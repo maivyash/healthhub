@@ -1,60 +1,70 @@
-var createError = require("http-errors");
-var express = require("express");
-var path = require("path");
-var cookieParser = require("cookie-parser");
-var logger = require("morgan");
-const registerRouter = require("./routes/register");
+require("dotenv").config(); // ✅ Load environment variables early
+const createError = require("http-errors");
+const express = require("express");
+const path = require("path");
+const cookieParser = require("cookie-parser");
+const logger = require("morgan");
+const mongoose = require("mongoose");
 const cors = require("cors");
-const { default: mongoose } = require("mongoose");
+
+// Routes
+const registerRouter = require("./routes/register");
 const loginRouter = require("./routes/login");
-const reports = require("./routes/reports");
+const reportsRouter = require("./routes/reports");
 const summaryRouter = require("./routes/summary");
 const userRouter = require("./routes/users");
 const roomRouter = require("./routes/rooms");
 const chatRouter = require("./routes/chat");
 
-var app = express();
+// App
+const app = express();
 
+// MongoDB Connection
+mongoose
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch((err) => {
+    console.error("❌ MongoDB connection error:", err.message);
+    process.exit(1);
+  });
+
+// Middleware
 app.use(cors());
-app.use(express.json());
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-//main start
+// Routes
 app.use("/register", registerRouter);
 app.use("/login", loginRouter);
-app.use("/reports", reports);
+app.use("/reports", reportsRouter);
 app.use("/summary", summaryRouter);
 app.use("/users", userRouter);
 app.use("/rooms", roomRouter);
 app.use("/chat", chatRouter);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+// Default route
 app.get("/", (req, res) => {
-  res.json({ error: "Your Access is Denied" });
+  res.status(403).json({ error: "Your Access is Denied" });
 });
 
-//main ends
-// catch 404 and forward to error handler
+// 404 handler
 app.use(function (req, res, next) {
   next(createError(404));
 });
 
-mongoose.connect("mongodb://127.0.0.1:27017/HealthHub", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-// error handler
+// Error handler
 app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render("error");
+  res.status(err.status || 500).json({
+    message: err.message,
+    error: req.app.get("env") === "development" ? err : {},
+  });
 });
 
 module.exports = app;
