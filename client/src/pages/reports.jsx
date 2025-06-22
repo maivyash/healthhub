@@ -91,8 +91,14 @@ const Reports = () => {
       setIsUploading(false);
     }
   };
-
-  if (loading || !user) return <Spinner />;
+  useEffect(() => {
+    if (loading) return <Spinner />;
+    if (!user.role) {
+      toast.error("Please Login");
+      navigate("/login", { replace: true });
+      return;
+    }
+  }, [user, loading]);
 
   return (
     <div>
