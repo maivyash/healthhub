@@ -20,7 +20,9 @@ const Reports = () => {
 
   const fetchFiles = async () => {
     if (loading || !user?.role) return;
-    const url = `http://localhost:8000/reports/files?${user.role}=${user.id}`;
+
+    const url = `${process.env.REACT_APP_SERVER}/reports/files?${user.role}=${user.id}`;
+
     try {
       setIsFetching(true);
       const res = await axios.get(url);
@@ -34,12 +36,23 @@ const Reports = () => {
   };
 
   useEffect(() => {
-    if (!loading && user) {
-      fetchFiles();
+    if (loading) {
+      return;
     }
+    if (!user) {
+      return;
+    }
+    fetchFiles();
   }, [user, loading]);
 
   useEffect(() => {
+    if (loading) {
+      return;
+    }
+    if (!user) {
+      navigate("/login");
+      return;
+    }
     const query = searchQuery.toLowerCase();
     if (user?.role === "doctor" || user?.role === "pathologist") {
       setFilteredFiles(
@@ -75,7 +88,7 @@ const Reports = () => {
     setIsUploading(true);
     try {
       const response = await axios.post(
-        `http://localhost:8000/reports/upload?userId=${user.id}`,
+        `${process.env.REACT_APP_SERVER}/reports/upload?userId=${user.id}`,
         formData
       );
       if (response.status === 200) {
@@ -206,7 +219,7 @@ const Reports = () => {
                   }}
                 >
                   <a
-                    href={`http://localhost:8000/${file.path.replace(
+                    href={`${process.env.REACT_APP_SERVER}/${file.path.replace(
                       /\\/g,
                       "/"
                     )}`}

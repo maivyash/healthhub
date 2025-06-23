@@ -20,12 +20,12 @@ const RoomsDashboard = () => {
     if (!user || !user.id || !user.role) return;
 
     try {
-      let link = `http://localhost:8000/rooms?createdby=${user.id}`;
+      let link = `${process.env.REACT_APP_SERVER}/rooms?createdby=${user.id}`;
       if (user.role === "doctor") {
-        link = `http://localhost:8000/rooms?doctorId=${user.id}`;
+        link = `${process.env.REACT_APP_SERVER}/rooms?doctorId=${user.id}`;
       }
       if (user.role === "pathologist") {
-        link = `http://localhost:8000/rooms?pathologyId=${user.id}`;
+        link = `${process.env.REACT_APP_SERVER}/rooms?pathologyId=${user.id}`;
       }
 
       const response = await fetch(link);
@@ -73,9 +73,12 @@ const RoomsDashboard = () => {
     if (!window.confirm("Are you sure you want to delete this room?")) return;
 
     try {
-      const response = await fetch(`http://localhost:8000/rooms/${roomId}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_SERVER}/rooms/${roomId}`,
+        {
+          method: "DELETE",
+        }
+      );
       const result = await response.json();
 
       if (response.status === 200) {

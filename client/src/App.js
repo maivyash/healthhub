@@ -8,6 +8,7 @@ import Analysis from "./pages/analysis";
 import { AuthProvider } from "./components/AuthAutorization";
 import RoomDashBoardPage from "./pages/RoomDashboardPage";
 import { ToastContainer } from "react-toastify";
+import Profile from "./pages/profile";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/reports" element={<Reports />} />
           <Route path="/analysis" element={<Analysis />} />
           <Route path="/rooms" element={<RoomDashBoardPage />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </AuthProvider>
     </>

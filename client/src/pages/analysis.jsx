@@ -33,7 +33,9 @@ const Analysis = () => {
   useEffect(() => {
     const fetchAIData = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/summary/ai");
+        const res = await axios.get(
+          `${process.env.REACT_APP_SERVER}/summary/ai`
+        );
         if (res.status === 500) {
           toast.error(res.data.error || "Server went Upset");
           return;
@@ -50,7 +52,7 @@ const Analysis = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/summary");
+        const res = await axios.get(`${process.env.REACT_APP_SERVER}/summary`);
         if (res.status === 500) {
           toast.error(res.data.error || "Server went Upset");
           return;

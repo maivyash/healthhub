@@ -63,6 +63,7 @@ const Navbar = () => {
                 className="login-btn"
                 onClick={(e) => {
                   e.preventDefault();
+                  navigate("/profile");
                 }}
               >
                 {user.name.charAt(0).toUpperCase() + user.name.slice(1)}

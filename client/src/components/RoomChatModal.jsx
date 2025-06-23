@@ -1,9 +1,8 @@
-// RoomChat.jsx
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import { toast } from "react-toastify";
 import { useAuth } from "../components/AuthAutorization";
-import "../css/RoomChatModal.css";
+import { toast } from "react-toastify";
+import "../css/RoomChatModal.css"; // we’ll update this too
 
 const RoomChat = ({ roomId, roomData, onClose }) => {
   const { user } = useAuth();
@@ -14,9 +13,9 @@ const RoomChat = ({ roomId, roomData, onClose }) => {
 
   const fetchMessages = async () => {
     try {
-      const res = await axios.get(`http://localhost:8000/chat/${roomId}`);
-      console.log(res.data);
-
+      const res = await axios.get(
+        `${process.env.REACT_APP_SERVER}/chat/${roomId}`
+      );
       setMessages(res.data);
     } catch (err) {
       toast.error("Failed to load messages");
@@ -24,36 +23,31 @@ const RoomChat = ({ roomId, roomData, onClose }) => {
   };
 
   const sendMessage = async () => {
-    if (!newMessage && !file) {
-      toast.warn("Please type a message or upload a file");
-      return;
-    }
-    console.log("Dcotr id befor form subbmition" + roomData.doctorId); //roomData.doctorId is returning id clearly
+    if (!newMessage && !file)
+      return toast.warn("Type message or upload a file");
+
     const formData = new FormData();
     formData.append("text", newMessage);
     formData.append("roomId", roomId);
     formData.append("sentBy", user.id);
-
     formData.append("doctorId", roomData.doctorId);
     formData.append("pathologyId", roomData.pathologyId);
-
     formData.append("senderName", user.name);
     formData.append("senderRole", user.role);
     formData.append("patientId", roomData.createdBy);
-    console.log(formData.get("doctorId"));
-
     if (file) formData.append("file", file);
-    try {
-      const res = await axios.post("http://localhost:8000/chat/send", formData);
-      if (!(res.status === 200)) {
-        toast.error(res.error || "Something Went Wrong");
-        return;
-      }
-      setMessages((prev) => [...prev, res.data]);
 
-      setNewMessage("");
-      setFile(null);
-    } catch (err) {
+    try {
+      const res = await axios.post(
+        `${process.env.REACT_APP_SERVER}/chat/send`,
+        formData
+      );
+      if (res.status === 200) {
+        setMessages((prev) => [...prev, res.data]);
+        setNewMessage("");
+        setFile(null);
+      }
+    } catch {
       toast.error("Send failed");
     }
   };
@@ -68,60 +62,74 @@ const RoomChat = ({ roomId, roomData, onClose }) => {
 
   return (
     <>
-      {/* Blurred Backdrop */}
-      <div className="chat-backdrop" onClick={onClose}></div>
+      <div className="chat-modal-backdrop" onClick={onClose}></div>
+      <div className="chat-modal">
+        <div className="chat-left">
+          <div className="chat-header">
+            <h2>Dr. {roomData.doctor}</h2>
+          </div>
 
-      {/* Chat Popup */}
-      <div className="chat-popup">
-        <div className="chat-header">
-          <h4>{roomData.roomName}</h4>
-          <p>
-            Doctor: Dr. {roomData.doctor} | Pathologist: Dr.{" "}
-            {roomData.pathology}
-          </p>
-          <button className="close-btn" onClick={onClose}>
-            ❌
-          </button>
+          <div className="chat-body">
+            {messages.map((msg, idx) => (
+              <div
+                key={idx}
+                className={`chat-bubble ${
+                  msg.sentBy === user.id ? "sent" : "received"
+                }`}
+              >
+                <div className="chat-sender">{msg.senderName}</div>
+                {msg.text && <p>{msg.text}</p>}
+                {msg.file && (
+                  <a
+                    href={`/${msg.file.filepath.replace(/\\/g, "/")}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="file-download"
+                  >
+                    📄 {msg.file.filename || "View File"}
+                  </a>
+                )}
+              </div>
+            ))}
+            <div ref={chatEndRef} />
+          </div>
+
+          <div className="chat-input-bar">
+            <input
+              type="text"
+              placeholder="Write a message..."
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+            />
+            <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+            <button onClick={sendMessage}>Send ➤</button>
+          </div>
         </div>
 
-        <div className="chat-messages">
-          {messages.map((msg, idx) => (
-            <div
-              key={idx}
-              className={`chat-bubble ${
-                msg.sentBy === user.id ? "sent" : "received"
-              }`}
-            >
-              <p className="sender">{msg.senderName}</p>
-              {msg.text && <p>{msg.text}</p>}
-              {msg.file && (
-                <a
-                  href={`/${msg.file.filepath.replace(/\\/g, "/")}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="file-link"
-                >
-                  📄 Download PDF
-                </a>
-              )}
-            </div>
-          ))}
-          <div ref={chatEndRef} />
-        </div>
+        <div className="chat-right">
+          <div className="patient-profile">
+            <img src="/default-avatar.png" alt="avatar" className="avatar" />
+            <h4>{user.name}</h4>
+            <p>{user.role}</p>
+          </div>
 
-        <div className="chat-input">
-          <input
-            type="text"
-            placeholder="Type your message here"
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-          />
-          <input
-            type="file"
-            accept="application/pdf"
-            onChange={(e) => setFile(e.target.files[0])}
-          />
-          <button onClick={sendMessage}>➤</button>
+          <div className="shared-documents">
+            <h5>Shared Documents</h5>
+            {messages
+              .filter((m) => m.file)
+              .map((m, i) => (
+                <div key={i} className="doc-item">
+                  <span>{new Date(m.createdAt).toDateString()}</span>
+                  <a
+                    href={`/${m.file.filepath.replace(/\\/g, "/")}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {m.file.filename}
+                  </a>
+                </div>
+              ))}
+          </div>
         </div>
       </div>
     </>

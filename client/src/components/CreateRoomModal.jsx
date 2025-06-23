@@ -24,7 +24,7 @@ const CreateRoomModal = ({ onClose, onRoomCreated }) => {
   };
   const renderdoc = async (doctorId) => {
     const response = await fetch(
-      `http://localhost:8000/users/getDoctor?id=${doctorId}`,
+      `${process.env.REACT_APP_SERVER}/users/getDoctor?id=${doctorId}`,
       { method: "GET" }
     );
     const result = await response.json();
@@ -43,7 +43,7 @@ const CreateRoomModal = ({ onClose, onRoomCreated }) => {
 
   const renderlab = async (labId) => {
     const response = await fetch(
-      `http://localhost:8000/users/getPathologist?id=${labId}`,
+      `${process.env.REACT_APP_SERVER}/users/getPathologist?id=${labId}`,
       { method: "GET" }
     );
     const result = await response.json();
@@ -89,7 +89,7 @@ const CreateRoomModal = ({ onClose, onRoomCreated }) => {
 
     try {
       const response = await fetch(
-        `http://localhost:8000/rooms?createdby=${user.id}&doctorId=${doctorId}&pathologyId=${labId}&roomName=${roomName}&mobilenumber=${mobile}&problem=${problem}`,
+        `${process.env.REACT_APP_SERVER}/rooms?createdby=${user.id}&doctorId=${doctorId}&pathologyId=${labId}&roomName=${roomName}&mobilenumber=${mobile}&problem=${problem}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
