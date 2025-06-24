@@ -19,7 +19,12 @@ const Reports = () => {
   const navigate = useNavigate();
 
   const fetchFiles = async () => {
-    if (loading || !user?.role) return;
+    if (loading) return;
+    if (!user) {
+      toast.error("Please Login");
+      navigate("/login");
+      return;
+    }
 
     const url = `${process.env.REACT_APP_SERVER}/reports/files?${user.role}=${user.id}`;
 
@@ -50,6 +55,7 @@ const Reports = () => {
       return;
     }
     if (!user) {
+      toast.error("Please Login");
       navigate("/login");
       return;
     }
@@ -105,8 +111,8 @@ const Reports = () => {
     }
   };
   useEffect(() => {
-    if (loading) return <Spinner />;
-    if (!user.role) {
+    if (loading) return;
+    if (!user) {
       toast.error("Please Login");
       navigate("/login", { replace: true });
       return;
@@ -118,7 +124,7 @@ const Reports = () => {
       <Navbar />
       <div className="upload-container ">
         {/* Upload box only for patient */}
-        {user.role === "patient" && (
+        {user?.role === "patient" && (
           <div
             className={`drop-area ${isDragging ? "dragging" : ""}`}
             onDrop={handleDrop}
@@ -176,7 +182,7 @@ const Reports = () => {
           <input
             type="text"
             placeholder={
-              user.role === "doctor" || user.role === "pathologist"
+              user?.role === "doctor" || user?.role === "pathologist"
                 ? "Search by patient name..."
                 : "Search by file name..."
             }
@@ -237,7 +243,7 @@ const Reports = () => {
                   </a>
                   <p>🕒 {new Date(file.uploadDate).toLocaleString()}</p>
 
-                  {(user.role === "doctor" || user.role === "pathologist") &&
+                  {(user?.role === "doctor" || user?.role === "pathologist") &&
                     file.patientId?.fullName && (
                       <p>👤 Patient: {file.patientId.fullName}</p>
                     )}
@@ -260,7 +266,7 @@ const Reports = () => {
         </div>
 
         {/* View Reports Button */}
-        {user.role === "patient" && (
+        {user?.role === "patient" && (
           <div style={{ textAlign: "center", marginTop: "30px" }}>
             <button
               className="viewReportBtn"
