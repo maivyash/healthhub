@@ -34,12 +34,14 @@ const Profile = () => {
     }
 
     const common = {
-      fullName: user.fullName || "",
+      fullName: user.name || "",
       email: user.email || "",
       city: user.city || "",
     };
 
     if (user.role === "doctor") {
+      console.log(user);
+
       setForm({
         ...common,
         specialization: user.specialization || "",

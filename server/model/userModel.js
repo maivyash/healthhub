@@ -9,13 +9,15 @@ const userSchema = new mongoose.Schema({
   fullName: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   hashpassword: { type: String, required: true }, // Optional if needed later
-
+  age: String,
+  city: String,
   // Doctor-specific
   specialization: String,
   license: String,
   experience: String,
 
   // Pathologist-specific
+  license: String,
   labName: String,
   qualification: String,
 

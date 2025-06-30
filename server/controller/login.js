@@ -24,7 +24,7 @@ const loginPoster = async (req, res) => {
     if (!isMatch) {
       return res.status(401).json({ message: "Incorrect password" });
     }
-
+    user.hashpassword = "";
     // Generate token
     const token = jwt.sign(
       {
@@ -32,6 +32,8 @@ const loginPoster = async (req, res) => {
         role: user.role,
         name: user.fullName,
         role: user.role,
+        fullName: user.fullName,
+
         ...user,
       },
       JWT_SECRET,
