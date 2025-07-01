@@ -119,7 +119,7 @@ const RoomChat = ({ roomId, roomData, onClose }) => {
               .filter((m) => m.file)
               .map((m, i) => (
                 <div key={i} className="doc-item">
-                  <span>{new Date(m.createdAt).toDateString()}</span>
+                  <span>{new Date().toDateString()}</span>
                   <a
                     href={`/${m.file.filepath.replace(/\\/g, "/")}`}
                     target="_blank"
