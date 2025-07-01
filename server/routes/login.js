@@ -7,5 +7,19 @@ const JWT_SECRET = "eknumbertujhikambarchallshekasheki";
 
 loginRouter.post("/", loginPoster);
 loginRouter.post("/checklogin", checkLogin);
+loginRouter.get("/logout", (req, res) => {
+  // Clear all cookies by setting them to expire immediately
+  const cookieNames = Object.keys(req.cookies);
+  cookieNames.forEach((name) => {
+    res.clearCookie(name, {
+      path: "/",
+
+      secure: true, // if using HTTPS
+      httpOnly: true,
+    });
+  });
+
+  res.send("All cookies cleared");
+});
 
 module.exports = loginRouter;

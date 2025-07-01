@@ -2,6 +2,7 @@ var express = require("express");
 var userRouter = express.Router();
 const User = require("../model/userModel");
 const mongoose = require("mongoose");
+const { authenticateToken } = require("../helper/middleware");
 
 /* GET users listing. */
 userRouter.get("/", function (req, res, next) {
@@ -43,6 +44,44 @@ userRouter.get("/getPathologist", async (req, res) => {
     return res.status(424).json({ error: "Id is Not a Pathologist" });
   } else {
     return res.status(200).json({ pathologyName: user.fullName });
+  }
+});
+
+// Update profile route
+userRouter.put("/updateProfile", async (req, res) => {
+  try {
+    const userId = req.body.uid;
+    console.log(userId);
+
+    const updates = req.body;
+
+    // Remove fields that shouldn't be updated
+    delete updates._id;
+    delete updates.role;
+    delete updates.email;
+
+    delete updates.hashpassword;
+
+    // Find and update the user
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $set: updates },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({
+      message: "Profile updated successfully",
+      user: updatedUser,
+    });
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    res
+      .status(500)
+      .json({ message: "Error updating profile", error: error.message });
   }
 });
 

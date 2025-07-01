@@ -33,8 +33,8 @@ const loginPoster = async (req, res) => {
         name: user.fullName,
         role: user.role,
         fullName: user.fullName,
-
-        ...user,
+        age: user.age,
+        user,
       },
       JWT_SECRET,
       {
@@ -51,6 +51,8 @@ const loginPoster = async (req, res) => {
         email: user.email,
         role: user.role,
         name: user.fullName,
+        age: user.age,
+        user,
       },
     });
   } catch (error) {
