@@ -3,10 +3,11 @@ import { replace, useNavigate } from "react-router-dom";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { toast, ToastContainer } from "react-toastify";
 import { useAuth } from "../components/AuthAutorization";
-
+import DotGrid from "../tools/bcanimate";
 // after successful login:
 
 import "../css/loginpage.css";
+import Navbar from "../components/NavBar";
 
 const LoginPage = () => {
   const { user, setUser } = useAuth();
@@ -156,55 +157,78 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="bc-image">
-      <div className="login-page">
-        <div className="login-container">
-          <div className="logo-section">
-            <SwitchTransition mode="out-in">
-              <CSSTransition
-                key={role}
-                timeout={300}
-                classNames="fade"
-                unmountOnExit
-                nodeRef={imageRef}
-              >
-                <img
-                  ref={imageRef}
-                  src={getImageSrc()}
-                  alt="medical logo"
-                  className="logo-image"
-                />
-              </CSSTransition>
-            </SwitchTransition>
-          </div>
+    <div>
+      <Navbar />
+      <div
+        style={{
+          width: "100%",
+          height: "600px",
+          position: "relative",
 
-          <div className="form-section">
-            <div className="form-box">
+          marginTop: "2vh",
+        }}
+      >
+        <DotGrid
+          dotSize={10}
+          gap={15}
+          baseColor="#00E1FF"
+          activeColor="#5227FF"
+          proximity={120}
+          shockRadius={250}
+          shockStrength={5}
+          resistance={750}
+          returnDuration={1.5}
+        />
+
+        <div className="login-page">
+          <div className="login-container">
+            <div className="logo-section">
               <SwitchTransition mode="out-in">
                 <CSSTransition
                   key={role}
                   timeout={300}
                   classNames="fade"
                   unmountOnExit
-                  nodeRef={formRef}
+                  nodeRef={imageRef}
                 >
-                  <div ref={formRef}>{renderForm()}</div>
+                  <img
+                    ref={imageRef}
+                    src={getImageSrc()}
+                    alt="medical logo"
+                    className="logo-image"
+                  />
                 </CSSTransition>
               </SwitchTransition>
             </div>
 
-            <div className="role-buttons">
-              <button onClick={() => setRole("doctor")}>Doctor's</button>
-              <button onClick={() => setRole("patient")}>Patient</button>
-              <button onClick={() => setRole("pathologist")}>
-                Pathologist
-              </button>
-            </div>
+            <div className="form-section">
+              <div className="form-box">
+                <SwitchTransition mode="out-in">
+                  <CSSTransition
+                    key={role}
+                    timeout={300}
+                    classNames="fade"
+                    unmountOnExit
+                    nodeRef={formRef}
+                  >
+                    <div ref={formRef}>{renderForm()}</div>
+                  </CSSTransition>
+                </SwitchTransition>
+              </div>
 
-            <div className="register-btn">
-              <button onClick={() => navigate("/register")}>
-                New here? Register!!
-              </button>
+              <div className="role-buttons">
+                <button onClick={() => setRole("doctor")}>Doctor's</button>
+                <button onClick={() => setRole("patient")}>Patient</button>
+                <button onClick={() => setRole("pathologist")}>
+                  Pathologist
+                </button>
+              </div>
+
+              <div className="register-btn">
+                <button onClick={() => navigate("/register")}>
+                  New here? Register!!
+                </button>
+              </div>
             </div>
           </div>
         </div>

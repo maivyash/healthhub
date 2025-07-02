@@ -1,0 +1,96 @@
+/* Base Layout */
+.coming-soon-wrapper {
+  min-height: 100vh;
+  background: #f8fafc;
+  margin-top: 5vh;
+  color: #1f2937;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  transition: background 0.3s, color 0.3s;
+}
+
+.dark {
+  background: #111827;
+  color: #f3f4f6;
+}
+
+/* Toggle Button */
+.toggle-mode {
+  position: absolute;
+  top: 5rem;
+  right: 1rem;
+  font-size: 14px;
+}
+
+.coming-soon-container {
+  text-align: center;
+  background: inherit;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.coming-soon-image {
+  width: 300px;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.coming-soon-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.coming-soon-text {
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Email Form */
+.email-subscription {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.email-subscription input {
+  padding: 10px;
+  width: 240px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.email-subscription button {
+  padding: 10px 16px;
+  background-color: #2563eb;
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.email-subscription button:hover {
+  background-color: #1d4ed8;
+}
+
+/* Dark Mode Enhancements */
+.dark .email-subscription input {
+  background-color: #1f2937;
+  color: white;
+  border: 1px solid #374151;
+}
+
+.dark .email-subscription button {
+  background-color: #3b82f6;
+}
+
+.dark .email-subscription button:hover {
+  background-color: #2563eb;
+}

@@ -19,7 +19,7 @@ loginRouter.get("/logout", (req, res) => {
     });
   });
 
-  res.send("All cookies cleared");
+  res.status(200).json({ message: "All cookies cleared" });
 });
 
 module.exports = loginRouter;

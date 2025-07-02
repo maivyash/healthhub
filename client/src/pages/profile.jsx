@@ -90,14 +90,20 @@ const Profile = () => {
 
   const handleSave = async () => {
     try {
+      console.log(
+        "Sending to:",
+        `${process.env.REACT_APP_SERVER}/users/updateprofile`
+      );
+
       const response = await fetch(
         `${process.env.REACT_APP_SERVER}/users/updateprofile`,
+
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
-          credentials: "include",
+
           body: JSON.stringify({ ...form, uid: user.id }),
         }
       );
@@ -109,13 +115,7 @@ const Profile = () => {
       }
 
       toast.success("Profile saved successfully!");
-      const res = await fetch(`${process.env.REACT_APP_SERVER}/login/logout`);
-      if (res.ok) {
-        toast.success("LOGOUT......");
-        navigate("/");
-
-        window.location.reload();
-      }
+      handleLogout();
       // Optionally update local user state if needed
     } catch (error) {
       console.error("Error saving profile:", error);
@@ -123,13 +123,17 @@ const Profile = () => {
     }
   };
   const handleLogout = async () => {
-    const res = await fetch(`${process.env.REACT_APP_SERVER}/login/logout`);
-    if (res.ok) {
-      toast.success("LOGOUT......");
-
-      navigate("/");
-      window.location.reload();
-    }
+    await fetch(`${process.env.REACT_APP_SERVER}/login/logout`, {
+      method: "GET",
+      headers: {
+        "Cache-Control": "no-store",
+      },
+    });
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "role=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    toast.success("Logged out");
+    navigate("/");
+    window.location.reload();
   };
   if (loading || !user) return <Spinner />;
 
