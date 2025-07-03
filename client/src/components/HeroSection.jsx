@@ -152,7 +152,13 @@ const HeroSection = () => {
                   <br />
                 </div>
 
-                <button>View Now</button>
+                <button
+                  onClick={() => {
+                    navigate("/viewAppoitment");
+                  }}
+                >
+                  View Now
+                </button>
               </div>
               <div className="cardfx">
                 <div>

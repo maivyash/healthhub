@@ -108,7 +108,11 @@ const RoomChat = ({ roomId, roomData, onClose }) => {
 
         <div className="chat-right">
           <div className="patient-profile">
-            <img src="/default-avatar.png" alt="avatar" className="avatar" />
+            <img
+              src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${user.name}`}
+              alt="avatar"
+              className="avatar"
+            />
             <h4>{user.name}</h4>
             <p>{user.role}</p>
           </div>

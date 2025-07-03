@@ -6,6 +6,7 @@ import Spinner from "../components/spinner";
 import { motion } from "framer-motion";
 import "../css/profile.css";
 import Navbar from "../components/NavBar";
+
 const Profile = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
@@ -25,6 +26,9 @@ const Profile = () => {
     workingDays: [],
   });
 
+  const [image, setImage] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState("");
+
   useEffect(() => {
     if (loading) return;
     if (!user) {
@@ -36,8 +40,14 @@ const Profile = () => {
     const common = {
       fullName: user.name || "",
       email: user.email || "",
-      city: user.user.city || "",
+      city: user.user?.city || "",
     };
+
+    setPreviewUrl(
+      user.user?.avatarUrl
+        ? `${process.env.REACT_APP_SERVER}${user.user.avatarUrl}`
+        : "https://api.dicebear.com/7.x/adventurer/svg?seed=yash"
+    );
 
     if (user.role === "doctor") {
       setForm({
@@ -69,16 +79,6 @@ const Profile = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const workingDaysOptions = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday",
-  ];
-
   const handleDayToggle = (day) => {
     setForm((prev) => ({
       ...prev,
@@ -88,54 +88,70 @@ const Profile = () => {
     }));
   };
 
+  const handleAvatarClick = () => {
+    document.getElementById("avatarInput").click();
+  };
+
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file);
+      setPreviewUrl(URL.createObjectURL(file));
+    }
+  };
+
   const handleSave = async () => {
     try {
-      console.log(
-        "Sending to:",
-        `${process.env.REACT_APP_SERVER}/users/updateprofile`
-      );
+      const formData = new FormData();
+      Object.entries(form).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+          value.forEach((v) => formData.append(key, v));
+        } else {
+          formData.append(key, value);
+        }
+      });
+
+      formData.append("uid", user.id);
+      if (image) formData.append("avatar", image);
 
       const response = await fetch(
         `${process.env.REACT_APP_SERVER}/users/updateprofile`,
-
         {
           method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-
-          body: JSON.stringify({ ...form, uid: user.id }),
+          body: formData,
         }
       );
 
       const data = await response.json();
+      if (!response.ok) throw new Error(data.message);
 
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to save profile");
-      }
-
-      toast.success("Profile saved successfully!");
+      toast.success("Profile updated successfully!");
       handleLogout();
-      // Optionally update local user state if needed
-    } catch (error) {
-      console.error("Error saving profile:", error);
-      toast.error(error.message || "Error saving profile");
+    } catch (err) {
+      toast.error(err.message || "Failed to update profile");
     }
   };
+
   const handleLogout = async () => {
-    await fetch(`${process.env.REACT_APP_SERVER}/login/logout`, {
-      method: "GET",
-      headers: {
-        "Cache-Control": "no-store",
-      },
-    });
-    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "role=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    await fetch(`${process.env.REACT_APP_SERVER}/login/logout`);
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+    document.cookie = "role=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
     toast.success("Logged out");
     navigate("/");
     window.location.reload();
   };
+
   if (loading || !user) return <Spinner />;
+
+  const workingDaysOptions = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+  ];
 
   return (
     <>
@@ -150,19 +166,25 @@ const Profile = () => {
         <p className="subtext">Manage your profile information</p>
 
         <div className="user-summary">
-          <img
-            src="https://api.dicebear.com/7.x/adventurer/svg?seed=yash"
-            alt="profile"
-            className="profile-avatar"
-          />
+          <div className="avatar-wrapper" onClick={handleAvatarClick}>
+            <img
+              src={previewUrl}
+              alt="avatar"
+              className="profile-avatar clickable"
+            />
+            <input
+              id="avatarInput"
+              type="file"
+              accept="image/*"
+              style={{ display: "none" }}
+              onChange={handleAvatarChange}
+            />
+          </div>
           <div>
-            <h3>{form.fullName || "User"}</h3>
-            <p>
-              {user.role === "doctor"
-                ? `Specialization: ${form.specialization}`
-                : null}
-            </p>
-            {user.license && <p>License: {form.license}</p>}
+            <h3>{form.fullName}</h3>
+            {user.role === "doctor" && (
+              <p>Specialization: {form.specialization}</p>
+            )}
             <p>UID: {user.id}</p>
           </div>
         </div>
@@ -181,24 +203,23 @@ const Profile = () => {
                 name="license"
                 value={form.license}
                 onChange={handleChange}
-                placeholder="License Number"
+                placeholder="License"
               />
               <input
                 name="experience"
                 value={form.experience}
                 onChange={handleChange}
-                placeholder="Years of Experience"
+                placeholder="Experience"
               />
             </>
           )}
-
           {user.role === "pathologist" && (
             <>
               <input
                 name="license"
                 value={form.license}
                 onChange={handleChange}
-                placeholder="License Number"
+                placeholder="License"
               />
               <input
                 name="labName"
@@ -214,7 +235,6 @@ const Profile = () => {
               />
             </>
           )}
-
           {user.role === "patient" && (
             <>
               <input
@@ -231,7 +251,6 @@ const Profile = () => {
               />
             </>
           )}
-
           <input
             name="city"
             value={form.city}
@@ -244,17 +263,16 @@ const Profile = () => {
           <>
             <h4>Availability</h4>
             <div className="day-checkboxes">
-              {Array.isArray(form.workingDays) &&
-                workingDaysOptions.map((day) => (
-                  <label key={day}>
-                    <input
-                      type="checkbox"
-                      checked={form.workingDays.includes(day)}
-                      onChange={() => handleDayToggle(day)}
-                    />
-                    {day}
-                  </label>
-                ))}
+              {workingDaysOptions.map((day) => (
+                <label key={day}>
+                  <input
+                    type="checkbox"
+                    checked={form.workingDays.includes(day)}
+                    onChange={() => handleDayToggle(day)}
+                  />
+                  {day}
+                </label>
+              ))}
             </div>
           </>
         )}
@@ -262,8 +280,8 @@ const Profile = () => {
         <button className="save-button" onClick={handleSave}>
           Save Changes
         </button>
-        <button className="save-button " onClick={handleLogout}>
-          LogOut
+        <button className="save-button" onClick={handleLogout}>
+          Logout
         </button>
       </motion.div>
     </>

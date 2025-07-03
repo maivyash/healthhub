@@ -4,6 +4,28 @@ const User = require("../model/userModel");
 const mongoose = require("mongoose");
 const { authenticateToken } = require("../helper/middleware");
 
+const multer = require("multer");
+const path = require("path");
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/avatars"); // Create this folder if it doesn’t exist
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname)); // unique name
+  },
+});
+
+const upload = multer({ storage: storage });
+const fs = require("fs");
+
+const uploadPath = path.join(__dirname, "uploads/avatars");
+
+// Check and create directory if it doesn't exist
+if (!fs.existsSync(uploadPath)) {
+  fs.mkdirSync(uploadPath, { recursive: true });
+}
+
 /* GET users listing. */
 userRouter.get("/", function (req, res, next) {
   res.statusCode(404).send("respond with a resource");
@@ -47,41 +69,49 @@ userRouter.get("/getPathologist", async (req, res) => {
   }
 });
 
-// Update profile route
-userRouter.put("/updateProfile", async (req, res) => {
+//for avatar
+userRouter.put("/updateprofile", upload.single("avatar"), async (req, res) => {
   try {
     const userId = req.body.uid;
-    console.log(userId);
+    const updates = { ...req.body };
 
-    const updates = req.body;
-
-    // Remove fields that shouldn't be updated
     delete updates._id;
     delete updates.role;
     delete updates.email;
-
     delete updates.hashpassword;
 
-    // Find and update the user
+    if (req.file) {
+      updates.avatarUrl = `/uploads/avatars/${req.file.filename}`;
+    }
+
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       { $set: updates },
       { new: true, runValidators: true }
     );
 
-    if (!updatedUser) {
+    if (!updatedUser)
       return res.status(404).json({ message: "User not found" });
-    }
 
-    res.json({
-      message: "Profile updated successfully",
-      user: updatedUser,
-    });
-  } catch (error) {
-    console.error("Error updating profile:", error);
+    res.json({ message: "Profile updated successfully", user: updatedUser });
+  } catch (err) {
+    console.error("Profile update error:", err);
     res
       .status(500)
-      .json({ message: "Error updating profile", error: error.message });
+      .json({ message: "Error updating profile", error: err.message });
+  }
+});
+//fethiing doctors
+// GET /users/doctors
+userRouter.get("/doctors", async (req, res) => {
+  try {
+    const doctors = await User.find({ role: "doctor" }).select(
+      "fullName specialization avatarUrl workingDays city"
+    );
+    res.json({ doctors });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error fetching doctors" });
   }
 });
 

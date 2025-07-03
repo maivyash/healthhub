@@ -15,6 +15,7 @@ const summaryRouter = require("./routes/summary");
 const userRouter = require("./routes/users");
 const roomRouter = require("./routes/rooms");
 const chatRouter = require("./routes/chat");
+const bookingRouter = require("./routes/bookingAppoitment");
 
 // App
 const app = express();
@@ -48,6 +49,8 @@ app.use("/users", userRouter);
 app.use("/rooms", roomRouter);
 app.use("/chat", chatRouter);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/uploads", express.static("uploads"));
+app.use("/bookings", bookingRouter);
 
 // Default route
 app.get("/", (req, res) => {

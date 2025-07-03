@@ -11,6 +11,8 @@ import RoomDashBoardPage from "./pages/RoomDashboardPage";
 import { ToastContainer } from "react-toastify";
 import Profile from "./pages/profile";
 import ComingSoon from "./pages/yetocome";
+import ViewAppointment from "./pages/ViewAppointment";
+
 function App() {
   return (
     <>
@@ -26,6 +28,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/findDoctor" element={<FindDoctor />} />
           <Route path="/yetocome" element={<ComingSoon />} />
+          <Route path="/viewAppoitment" element={<ViewAppointment />} />
         </Routes>
       </AuthProvider>
     </>
