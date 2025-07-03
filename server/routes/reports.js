@@ -39,8 +39,8 @@ reports.post("/upload", (req, res, next) => {
 
   upload.single("file")(req, res, async (err) => {
     if (err instanceof multer.MulterError || err) {
-      return res.status(400).json({ error: err.message });
       console.log(err.message);
+      return res.status(400).json({ error: err.message });
     }
 
     if (!req.file) {
