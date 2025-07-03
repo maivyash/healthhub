@@ -105,7 +105,7 @@ const Reports = () => {
         toast.error("Upload failed. Try again.");
       }
     } catch (error) {
-      toast.error("Upload failed. Or not valid report.");
+      toast.error(error);
     } finally {
       setIsUploading(false);
     }
