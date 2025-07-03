@@ -84,32 +84,41 @@ const Reports = () => {
     if (file) setSelectedFile(file);
   };
 
+  // make sure you append userId in the QUERY, not just in formData
   const handleUpload = async () => {
-    if (loading || !selectedFile)
-      return toast.warn("Please select a file first.");
+    if (loading || !selectedFile) {
+      toast.warn("Please select a file first.");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("file", selectedFile);
-    formData.append("userId", user.name);
 
     setIsUploading(true);
     try {
-      const response = await axios.post(
+      const res = await axios.post(
         `${process.env.REACT_APP_SERVER}/reports/upload?userId=${user.id}`,
-        formData
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
       );
-      if (response.status === 200) {
+
+      if (res.status === 200 || res.status === 201) {
         toast.success("File uploaded successfully!");
         setSelectedFile(null);
         await fetchFiles();
       } else {
         toast.error("Upload failed. Try again.");
       }
-    } catch (error) {
-      toast.error(error);
+    } catch (err) {
+      console.error(err);
+      toast.error(err.response?.data?.message || "Upload failed.");
     } finally {
       setIsUploading(false);
     }
   };
+
   useEffect(() => {
     if (loading) return;
     if (!user) {
