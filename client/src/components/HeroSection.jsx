@@ -77,7 +77,13 @@ const HeroSection = () => {
                 <br />
                 <img src={supportImage} alt="support" srcset="" />
                 <br />
-                <button>Know More ➡️</button>
+                <button
+                  onClick={() => {
+                    navigate("/knowconsultaion");
+                  }}
+                >
+                  Know More ➡️
+                </button>
               </div>
               <div className="card">
                 <br />
@@ -87,7 +93,13 @@ const HeroSection = () => {
                 <br />
                 <img src={graphImage} alt="support" srcset="" />
                 <br />
-                <button>Know More ➡️</button>
+                <button
+                  onClick={() => {
+                    navigate("/knowhistory");
+                  }}
+                >
+                  Know More ➡️
+                </button>
               </div>
               <div className="card">
                 <br />
@@ -97,7 +109,13 @@ const HeroSection = () => {
                 <br />
                 <img src={aiImage} alt="support" srcset="" />
                 <br />
-                <button>Know More ➡️</button>
+                <button
+                  onClick={() => {
+                    navigate("knowai");
+                  }}
+                >
+                  Know More ➡️
+                </button>
               </div>
             </div>
           </div>

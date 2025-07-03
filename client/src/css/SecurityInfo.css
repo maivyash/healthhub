@@ -1,0 +1,116 @@
+.security-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+  color: #1f2937;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Title + Subtitle */
+.security-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+  color: #111827;
+}
+
+.security-subtitle {
+  color: #4b5563;
+  max-width: 750px;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.security-section-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #1f2937;
+}
+
+/* Features */
+.security-feature-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.security-feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  transition: all 0.2s ease-in-out;
+  padding: 1rem 1rem;
+  border-radius: 0.6rem;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+}
+
+.security-feature:hover {
+  background-color: #f3f4f6;
+  transform: translateY(-2px);
+}
+
+.security-icon {
+  font-size: 1.8rem;
+  background-color: #e5e7eb;
+  padding: 0.6rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+}
+
+.security-text {
+  flex: 1;
+}
+
+.security-feature-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  color: #111827;
+}
+
+.security-feature-desc {
+  font-size: 0.95rem;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+/* CTA Button */
+.security-footer {
+  margin-top: 2.5rem;
+}
+
+.learn-more-button {
+  background-color: #f3f4f6;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: #1f2937;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.learn-more-button:hover {
+  background-color: #e5e7eb;
+  transform: scale(1.03);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .security-feature {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .security-icon {
+    margin-bottom: 0.5rem;
+  }
+}

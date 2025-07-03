@@ -1,0 +1,143 @@
+/* General Layout */
+.health-insights-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #1f2937;
+}
+
+/* Headings */
+.health-insights-container h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #111827;
+}
+
+.health-insights-container h2 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #111827;
+}
+
+.health-insights-container p {
+  color: #4b5563;
+  line-height: 1.7;
+}
+
+/* Chart Cards */
+.chart-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.chart-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+.chart-title {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-bottom: 0.25rem;
+}
+
+.chart-value {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.chart-subtext {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+
+.chart-subtext span {
+  font-weight: 600;
+}
+
+.trend-up {
+  color: #10b981;
+}
+
+.trend-down {
+  color: #ef4444;
+}
+
+/* Bar and Line Chart Styles */
+.chart-bar-container,
+.chart-line-container {
+  height: 7rem;
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.chart-bar {
+  width: 1.5rem;
+  background-color: #d1d5db;
+  border-radius: 6px;
+  transition: background-color 0.3s;
+}
+
+.chart-bar:hover {
+  background-color: #9ca3af;
+}
+
+.chart-line {
+  width: 0.375rem;
+  background-color: #3b82f6;
+  border-radius: 9999px;
+  transition: height 0.3s;
+}
+
+/* Chart labels */
+.chart-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 0.5rem;
+}
+
+/* CTA Button */
+.get-started-btn {
+  margin-top: 1.5rem;
+  background-color: #f3f4f6;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  color: #111827;
+}
+
+.get-started-btn:hover {
+  background-color: #e5e7eb;
+  transform: scale(1.02);
+  cursor: pointer;
+}
+
+/* Responsive Layout */
+@media (max-width: 768px) {
+  .chart-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 769px) {
+  .chart-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+}

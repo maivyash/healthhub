@@ -12,6 +12,9 @@ import { ToastContainer } from "react-toastify";
 import Profile from "./pages/profile";
 import ComingSoon from "./pages/yetocome";
 import ViewAppointment from "./pages/ViewAppointment";
+import BookingInfo from "./pages/bookingInfo";
+import SecurityInfo from "./pages/SecurityInfo";
+import HealthInsigth from "./pages/healthInsigth";
 
 function App() {
   return (
@@ -29,6 +32,9 @@ function App() {
           <Route path="/findDoctor" element={<FindDoctor />} />
           <Route path="/yetocome" element={<ComingSoon />} />
           <Route path="/viewAppoitment" element={<ViewAppointment />} />
+          <Route path="/knowhistory" element={<SecurityInfo />} />
+          <Route path="/knowai" element={<HealthInsigth />} />
+          <Route path="/knowconsultaion" element={<BookingInfo />} />
         </Routes>
       </AuthProvider>
     </>
