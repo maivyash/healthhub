@@ -109,7 +109,11 @@ const Reports = () => {
         setSelectedFile(null);
         await fetchFiles();
       } else {
-        toast.error("Upload failed. Try again.");
+        if (res.status === 424) {
+          toast.error("Upload failed. Report is not valid.");
+        } else {
+          toast.error("Upload failed. Try again.");
+        }
       }
     } catch (err) {
       console.error(err);
