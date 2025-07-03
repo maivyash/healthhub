@@ -6,19 +6,6 @@ const File = require("../model/file");
 const { extractFromText } = require("../helper/geminiHelper");
 
 const reports = express.Router();
-
-// Setup Multer
-
-const upload = multer({
-  storage,
-  fileFilter: (req, file, cb) => {
-    if (file.mimetype !== "application/pdf") {
-      return cb(new Error("Only PDF files are allowed"), false);
-    }
-    cb(null, true);
-  },
-});
-
 //NEW MULTER
 const path = require("path");
 
@@ -34,6 +21,18 @@ const storage = multer.diskStorage({
     cb(null, uploadDir);
   },
   filename: (req, file, cb) => cb(null, Date.now() + "-" + file.originalname),
+});
+
+// Setup Multer
+
+const upload = multer({
+  storage,
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype !== "application/pdf") {
+      return cb(new Error("Only PDF files are allowed"), false);
+    }
+    cb(null, true);
+  },
 });
 
 // Remove duplicate keys from Gemini output (safe fallback)
