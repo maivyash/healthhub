@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "../css/HeroSectionHomePatient.css";
+
 import doctorsImage from "../asset/doctors.png";
 import { useNavigate } from "react-router-dom";
 import supportImage from "../asset/support.jpg";
@@ -8,7 +8,12 @@ import aiImage from "../asset/AI.jpg";
 import { useAuth } from "../components/AuthAutorization";
 import SplitText from "../tools/SplitText";
 import PixelCard from "../tools/card";
-
+const isMobile = window.innerWidth <= 768;
+if (isMobile) {
+  import("../css/HeroSectionHomePatient.mobile.css");
+} else {
+  import("../css/HeroSectionHomePatient.css");
+}
 const HeroSection = () => {
   const navigate = useNavigate();
   const handleAnimationComplete = () => {

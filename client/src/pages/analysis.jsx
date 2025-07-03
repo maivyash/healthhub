@@ -158,16 +158,16 @@ const Analysis = () => {
             <div className="plan-grid">
               <div>
                 {plans.exercise.map((item, index) => (
-                  <div className="plan-box" key={index}>
-                    <span>
-                      Day {index + 1}: {item}
-                    </span>
+                  <label className="plan-box" key={index}>
                     <input
                       type="checkbox"
                       checked={!!completed[`exercise_${index}`]}
                       onChange={() => toggleCheck("exercise", index)}
                     />
-                  </div>
+                    <span>
+                      Day {index + 1}: {item}
+                    </span>
+                  </label>
                 ))}
               </div>
               <div>

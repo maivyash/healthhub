@@ -36,13 +36,58 @@ align-items: center;
   background-color: #f2f2f2;
   border-radius: 8px;
 }
-.viewReportBtn{
-  margin: 40px;
-width: 200px;
-height: 40px;
-background-color: #ffffff;
-border-radius: 20px;
-border: 2px solid linear-gradient(135deg, #38b2ac, #805ad5, #f56565, #38b2ac);
+.viewReportBtn {
+  margin: 40px auto;
+  padding: 10px 25px;
+  width: 200px;
+  font-size: 16px;
+  font-weight: 600;
+  background: linear-gradient(#fff, #fff) padding-box,
+              linear-gradient(135deg, #38b2ac, #805ad5, #f56565) border-box;
+  border: 2px solid transparent;
+  border-radius: 25px;
+  color: #009688;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
 
-  
+.viewReportBtn:hover {
+  background: #009688;
+  color: white;
+}
+
+
+@media screen and (max-width: 768px) {
+  .upload-container {
+    margin-top: 5vh;
+    padding: 10px;
+  }
+
+  .drop-area {
+    width: 90vw;
+    padding: 20px;
+    font-size: 14px;
+  }
+
+  .file-card {
+    width: 90vw;
+    padding-left: 20px;
+    font-size: 14px;
+  }
+
+  .viewReportBtn {
+    width: 90%;
+    height: 45px;
+    font-size: 16px;
+  }
+
+  .uploaded-files h4 {
+    text-align: center;
+    font-size: 18px;
+  }
+
+  input[type="text"] {
+    width: 90% !important;
+    font-size: 14px !important;
+  }
 }

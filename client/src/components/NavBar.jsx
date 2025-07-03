@@ -1,85 +1,50 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "../css/NavBar.css";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../components/AuthAutorization";
-const JWTsecretKey = "eknumbertujhikambarchallshekasheki";
+import { FaBars, FaTimes } from "react-icons/fa";
 
 const Navbar = () => {
   const { user } = useAuth();
-  const [name, setName] = useState("Login/Register"); // Initially empty
   const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  // Helper to get cookie by name
-  function getCookie(name) {
-    const match = document.cookie.match(
-      new RegExp("(^| )" + name + "=([^;]+)")
-    );
-    return match ? match[2] : null;
-  }
-
-  // Check login and update state
-
-  // Run checkLoggedIn once on component mount
+  const handleNavigate = (path) => {
+    navigate(path);
+    setMenuOpen(false);
+  };
 
   return (
     <div>
       <nav className="navbar">
-        <div className="logo">
-          <div>🩺</div> Medico Hub
+        <div className="logo" onClick={() => navigate("/")}>
+          🩺 <span>Medico Hub</span>
         </div>
 
-        <div className="navs">
+        <div className={`navs ${menuOpen ? "active" : ""}`}>
           <div className="nav-links">
-            <button
-              onClick={() => {
-                navigate("/");
-              }}
-            >
-              Home
-            </button>
-            <button
-              onClick={() => {
-                navigate("/rooms");
-              }}
-            >
-              Rooms
-            </button>
-            <button
-              onClick={() => {
-                navigate("/reports");
-              }}
-            >
-              Reports
-            </button>
+            <button onClick={() => handleNavigate("/")}>Home</button>
+            <button onClick={() => handleNavigate("/rooms")}>Rooms</button>
+            <button onClick={() => handleNavigate("/reports")}>Reports</button>
           </div>
 
           <div className="rightfx">
-            <div>
-              <input type="text" placeholder="Search here" />
-            </div>
-
-            {user ? (
-              <button
-                className="login-btn"
-                onClick={(e) => {
-                  e.preventDefault();
-                  navigate("/profile");
-                }}
-              >
-                {user.name.charAt(0).toUpperCase() + user.name.slice(1)}
-              </button>
-            ) : (
-              <button
-                className="login-btn"
-                onClick={(e) => {
-                  e.preventDefault();
-                  navigate("/login");
-                }}
-              >
-                Login/Register
-              </button>
-            )}
+            <input type="text" placeholder="Search here" />
+            <button
+              className="login-btn"
+              onClick={() =>
+                user ? handleNavigate("/profile") : handleNavigate("/login")
+              }
+            >
+              {user
+                ? user.name.charAt(0).toUpperCase() + user.name.slice(1)
+                : "Login/Register"}
+            </button>
           </div>
+        </div>
+
+        <div className="hamburger" onClick={() => setMenuOpen((prev) => !prev)}>
+          {menuOpen ? <FaTimes /> : <FaBars />}
         </div>
       </nav>
     </div>

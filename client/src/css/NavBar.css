@@ -1,74 +1,125 @@
-
 .navbar {
   position: fixed;
   top: 0;
-  width: 100%;
+  width: 90%;
   background: rgb(242, 242, 242);
   padding: 10px 20px;
+  margin-left: 3.5vw;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  z-index: 10;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 999;
 }
 
 .logo {
   display: flex;
-  width: 9%;
-
-  flex-direction: row;
-  justify-content: space-between;
+  align-items: center;
   font-weight: bold;
+  font-size: 1.2rem;
+  gap: 5px;
+  cursor: pointer;
 }
 
-.navs{
-      
-      display: flex;
-      justify-content:center;
-      align-items: center;
-      width: 60%;
-}
-.nav-links {
-  margin-left: 80px;
-  margin-right: 20px;
+.navs {
   display: flex;
   align-items: center;
-  flex-direction: row;
-  justify-content: space-around;
-  gap: 10px;
-  width: 40%;
+  margin-right: 5px;
+  justify-content: space-between;
+  width: 70%;
+  transition: all 0.3s ease;
+}
+
+.nav-links {
+  display: flex;
+  gap: 15px;
 }
 
 .nav-links button {
-  padding: 5px;
-  background-color: none;
-    background: none;
-    border-radius: 20px;
-    width: 25%;
-    padding: 10px;
-    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-}
-
-
-.rightfx{
-  display: flex;
-  width: 40%;
-  height: 25px;
-  justify-content: center;
-  align-items: center;
-  margin-right: 3%;
-   height: 80%;
-}
-.rightfx button{
-  margin-left: 3%;
-  height: 35px;
+  padding: 10px 15px;
+  border: none;
   border-radius: 20px;
-  width: 40%;
-  background-color: rgb(182, 176, 159);
+  background: transparent;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  cursor: pointer;
+  transition: background 0.3s ease;
 }
-.rightfx input{
+
+.nav-links button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.rightfx {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rightfx input {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 20px;
   background-color: rgb(234, 228, 213);
   color: black;
-  height: 0.9vw;
+}
+
+.rightfx button {
+  padding: 8px 16px;
+  border: none;
   border-radius: 20px;
+  background-color: rgb(182, 176, 159);
+  cursor: pointer;
+}
+
+.hamburger {
+  display: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+/* 🌐 Responsive for Mobile */
+@media (max-width: 768px) {
+  .navs {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    background-color: #f2f2f2;
+    width: 100%;
+    padding: 15px 20px;
+    box-sizing: border-box;
+    display: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .navs.active {
+    display: flex;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 12px;
+    margin: 12px 0;
+  }
+
+  .rightfx {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .rightfx input {
+    width: 100%;
+  }
+
+  .rightfx button {
+    width: 100%;
+  }
+
+  .hamburger {
+    display: block;
+    z-index: 1001;
+  }
 }
