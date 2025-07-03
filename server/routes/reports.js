@@ -40,9 +40,11 @@ reports.post("/upload", (req, res, next) => {
   upload.single("file")(req, res, async (err) => {
     if (err instanceof multer.MulterError || err) {
       return res.status(400).json({ error: err.message });
+      console.log(err.message);
     }
 
     if (!req.file) {
+      console.log("No file uploaded or invalid file type");
       return res
         .status(400)
         .json({ error: "No file uploaded or invalid file type" });
@@ -55,6 +57,7 @@ reports.post("/upload", (req, res, next) => {
       const text = pdfData.text;
 
       if (!text || text.length < 100) {
+        console.log("PDF content is unreadable.");
         return res.status(400).json({ error: "PDF content is unreadable." });
       }
 
