@@ -6,7 +6,7 @@ const { summarizeHealthTrends } = require("../helper/summarisehalthtrend");
 const summaryRouter = express.Router();
 
 const genAI = new GoogleGenerativeAI(
-  process.env.GEMINI_API_KEY || "AIzaSyAoJrcEFgXEZL-OuFRj9s-eEBFxd1yddsA"
+  process.env.GEMINI_API_KEY || "AIzaSyBGWEhJcPYRDdTzwZNmRBKGJ7oDfNujkbs"
 );
 
 // ----------------- Helper to Flatten and Normalize -------------------
@@ -77,7 +77,7 @@ Here is the extracted report data:
 ${JSON.stringify(allData, null, 2)}
 `;
 
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
     const result = await model.generateContent(prompt);
     const text = await result.response.text();
 

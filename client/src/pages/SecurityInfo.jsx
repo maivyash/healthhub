@@ -46,17 +46,6 @@ const SecurityInfo = () => {
             desc="You have full control over your medical history, including the ability to review, update, and manage who has access to your information."
           />
         </div>
-
-        <div className="security-footer">
-          <button
-            className="learn-more-button"
-            onClick={() => {
-              Navigate("/yetocome");
-            }}
-          >
-            Learn more about our security practices
-          </button>
-        </div>
       </div>
     </>
   );

@@ -13,7 +13,7 @@ roomRouter.post("/", async (req, res) => {
   if (
     !createdby ||
     !doctorId ||
-    !pathologyId ||
+
     !roomName ||
     !mobilenumber ||
     !problem
@@ -22,7 +22,60 @@ roomRouter.post("/", async (req, res) => {
   }
 
   // Validate ObjectIds
-  const ids = { createdby, doctorId, pathologyId };
+
+
+  if (pathologyId) {
+    const ids = { createdby, doctorId, pathologyId };
+    for (let [key, value] of Object.entries(ids)) {
+      if (!mongoose.Types.ObjectId.isValid(value)) {
+        return res.status(424).json({ error: `Invalid ID format for ${key}` });
+      }
+    }
+
+    // Validate mobile number
+    if (!/^[0-9]{10}$/.test(mobilenumber)) {
+      return res.status(424).json({ error: "Invalid mobile number" });
+    }
+
+    try {
+      // Check if users exist
+      const [creator, doctor, pathologist] = await Promise.all([
+        User.findById(createdby),
+        User.findById(doctorId),
+        User.findById(pathologyId),
+      ]);
+
+      if (!creator) return res.status(425).json({ error: "Login Again" });
+      if (!doctor || doctor.role !== "doctor")
+        return res
+          .status(424)
+          .json({ error: "Doctor not found or invalid role" });
+      if (!pathologist || pathologist.role !== "pathologist")
+        return res
+          .status(424)
+          .json({ error: "Pathologist not found or invalid role" });
+
+      // Create the room
+      const room = new Room({
+        createdby,
+        doctorId,
+        pathologyId,
+        roomName,
+        mobilenumber,
+        problem,
+      });
+
+      await room.save();
+
+      return res.status(200).json({ message: "Room created successfully", room });
+    } catch (err) {
+      console.error("Room creation error:", err);
+      return res.status(424).json({ error: "Internal server error" });
+    }
+  }
+
+
+  const ids = { createdby, doctorId };
   for (let [key, value] of Object.entries(ids)) {
     if (!mongoose.Types.ObjectId.isValid(value)) {
       return res.status(424).json({ error: `Invalid ID format for ${key}` });
@@ -36,10 +89,10 @@ roomRouter.post("/", async (req, res) => {
 
   try {
     // Check if users exist
-    const [creator, doctor, pathologist] = await Promise.all([
+    const [creator, doctor] = await Promise.all([
       User.findById(createdby),
       User.findById(doctorId),
-      User.findById(pathologyId),
+
     ]);
 
     if (!creator) return res.status(425).json({ error: "Login Again" });
@@ -47,16 +100,13 @@ roomRouter.post("/", async (req, res) => {
       return res
         .status(424)
         .json({ error: "Doctor not found or invalid role" });
-    if (!pathologist || pathologist.role !== "pathologist")
-      return res
-        .status(424)
-        .json({ error: "Pathologist not found or invalid role" });
+
 
     // Create the room
     const room = new Room({
       createdby,
       doctorId,
-      pathologyId,
+      pathologyId: null,
       roomName,
       mobilenumber,
       problem,
@@ -105,7 +155,7 @@ roomRouter.get("/", async (req, res) => {
     const rooms = await Room.find(filter)
       .populate("createdby", "fullName")
       .populate("doctorId", "fullName")
-      .populate("pathologyId", "fullName")
+
       .sort({ createdAt: -1 });
 
     const formattedRooms = rooms.map((room) => ({
@@ -113,7 +163,7 @@ roomRouter.get("/", async (req, res) => {
       roomName: room.roomName,
       doctor: room.doctorId?.fullName || "Unknown Doctor", //changed
       doctorId: room.doctorId,
-      pathologyId: room.pathologyId,
+      pathologyId: room.pathologyId || "Unknown",
       pathology: room.pathologyId?.fullName || "Unknown Lab",
       patient: room.createdby?.fullName || "Unknown Patient",
       createdOn: room.createdAt,

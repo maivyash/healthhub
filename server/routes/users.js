@@ -3,6 +3,7 @@ var userRouter = express.Router();
 const User = require("../model/userModel");
 const mongoose = require("mongoose");
 const { authenticateToken } = require("../helper/middleware");
+const { cacheMiddleware } = require("../helper/cache");
 
 const multer = require("multer");
 const path = require("path");
@@ -103,7 +104,7 @@ userRouter.put("/updateprofile", upload.single("avatar"), async (req, res) => {
 });
 //fethiing doctors
 // GET /users/doctors
-userRouter.get("/doctors", async (req, res) => {
+userRouter.get("/doctors", cacheMiddleware("doctors", 60), async (req, res) => {
   try {
     const doctors = await User.find({ role: "doctor" }).select(
       "fullName specialization avatarUrl workingDays city"

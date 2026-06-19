@@ -13,7 +13,7 @@ const roomSchema = new mongoose.Schema({
   },
   pathologyId: {
     type: mongoose.Schema.Types.ObjectId,
-    required: true,
+    required: false,
     ref: "User",
   },
   roomName: {

@@ -63,23 +63,33 @@ const CreateRoomModal = ({ onClose, onRoomCreated }) => {
   const handleCreateRoom = async () => {
     const { roomName, problem, mobile, doctorId, labId } = formData;
 
-    if (!roomName || !problem || !mobile || !doctorId || !labId) {
+    if (!roomName || !problem || !mobile) {
       toast.error("Enter all fields properly");
       return;
     }
-
+    if (!doctorId && !labId) {
+      toast.error("Add Atlest Doctor or Pathologist in Chat")
+    }
     if (mobile.length < 10) {
       toast.error("Enter a valid mobile number");
       return;
     }
-
-    const validDoc = await renderdoc(doctorId);
-    const validLab = await renderlab(labId);
-
-    if (!validDoc || !validLab) {
-      toast.error("Doctor or Lab ID is invalid");
-      return;
+    if (doctorId) {
+      const validDoc = await renderdoc(doctorId);
+      if (!validDoc) {
+        toast.error("Not valid Doctor ID")
+      }
     }
+
+    if (labId) {
+      const validLab = await renderlab(labId);
+      if (!validLab) {
+        toast.error("Not valid Lab ID")
+      }
+    }
+
+
+
 
     if (!user) {
       toast.error("Log in first");

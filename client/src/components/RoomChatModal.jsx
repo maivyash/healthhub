@@ -73,15 +73,14 @@ const RoomChat = ({ roomId, roomData, onClose }) => {
             {messages.map((msg, idx) => (
               <div
                 key={idx}
-                className={`chat-bubble ${
-                  msg.sentBy === user.id ? "sent" : "received"
-                }`}
+                className={`chat-bubble ${msg.sentBy === user.id ? "sent" : "received"
+                  }`}
               >
                 <div className="chat-sender">{msg.senderName}</div>
                 {msg.text && <p>{msg.text}</p>}
                 {msg.file && (
                   <a
-                    href={`/${msg.file.filepath.replace(/\\/g, "/")}`}
+                    href={`${process.env.REACT_APP_SERVER}/${msg.file.filepath.replace(/\\/g, "/")}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="file-download"
@@ -125,7 +124,7 @@ const RoomChat = ({ roomId, roomData, onClose }) => {
                 <div key={i} className="doc-item">
                   <span>{new Date().toDateString()}</span>
                   <a
-                    href={`/${m.file.filepath.replace(/\\/g, "/")}`}
+                    href={`${process.env.REACT_APP_SERVER}/${m.file.filepath.replace(/\\/g, "/")}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >

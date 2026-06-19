@@ -1,9 +1,10 @@
 import React from "react";
 import Navbar from "../components/NavBar";
 import "../css/HealthInsights.css";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const HealthInsights = () => {
+  const navigate = useNavigate();
   return (
     <>
       <Navbar />
@@ -97,14 +98,7 @@ const HealthInsights = () => {
             specific needs and goals, helping you achieve optimal health and
             well-being.
           </p>
-          <button
-            className="get-started-btn"
-            onClick={() => {
-              Navigate("/yetocome");
-            }}
-          >
-            Get Started
-          </button>
+
         </section>
       </div>
     </>

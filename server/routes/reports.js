@@ -4,6 +4,8 @@ const fs = require("fs");
 const pdfParse = require("pdf-parse");
 const File = require("../model/file");
 const { extractFromText } = require("../helper/geminiHelper");
+const { cacheMiddleware, invalidateCache } = require("../helper/cache");
+const { heavyLimiter } = require("../helper/rateLimiter");
 
 const reports = express.Router();
 //NEW MULTER
@@ -46,7 +48,7 @@ const cleanParameters = (params) => {
   return cleaned;
 };
 
-reports.post("/upload", (req, res, next) => {
+reports.post("/upload", heavyLimiter, (req, res, next) => {
   const { userId } = req.query;
   console.log("userId" + userId);
 
@@ -111,7 +113,11 @@ reports.post("/upload", (req, res, next) => {
         message: "✅ File and reports saved successfully",
         count: extractedReports.length,
       });
+
+      // Invalidate file cache after successful upload
+      await invalidateCache("files");
     } catch (err) {
+      
       console.error("❌ Upload failed:");
       console.error("Message:", err.message);
       console.error("Stack:", err.stack);
@@ -122,25 +128,31 @@ reports.post("/upload", (req, res, next) => {
   });
 });
 
-reports.get("/files", async (req, res) => {
-  const { patient, pathologist, doctor } = req.query;
+reports.get("/files", cacheMiddleware("files", 30), async (req, res) => {
+  try {
+    const { patient, pathologist, doctor } = req.query;
 
-  if (patient) {
-    const files = await File.find({ patientId: patient });
-
-    res.json(files);
-  } else if (doctor) {
-    const files = await File.find({ doctorId: doctor })
-      .populate("patientId", "fullName")
-      .populate("doctorId", "fullName")
-      .populate("pathologyId", "fullName");
-    res.json(files);
-  } else if (pathologist) {
-    const files = await File.find({ pathologyId: pathologist })
-      .populate("patientId", "fullName")
-      .populate("doctorId", "fullName")
-      .populate("pathologyId", "fullName");
-    res.json(files);
+    if (patient) {
+      const files = await File.find({ patientId: patient });
+      res.json(files);
+    } else if (doctor) {
+      const files = await File.find({ doctorId: doctor })
+        .populate("patientId", "fullName")
+        .populate("doctorId", "fullName")
+        .populate("pathologyId", "fullName");
+      res.json(files);
+    } else if (pathologist) {
+      const files = await File.find({ pathologyId: pathologist })
+        .populate("patientId", "fullName")
+        .populate("doctorId", "fullName")
+        .populate("pathologyId", "fullName");
+      res.json(files);
+    } else {
+      res.status(400).json({ error: "Missing query parameter" });
+    }
+  } catch (err) {
+    console.error("Files fetch error:", err);
+    res.status(500).json({ error: "Failed to fetch files" });
   }
 });
 

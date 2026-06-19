@@ -2,10 +2,10 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 require("dotenv").config();
 
 // Set your API key from environment variable or directly here (not recommended)
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const genAI = new GoogleGenerativeAI("AIzaSyBGWEhJcPYRDdTzwZNmRBKGJ7oDfNujkbs");
 
 async function extractFromText(pdfText) {
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
   const prompt = `
 You're an expert in analyzing medical pathology reports. Given the following report text, do two things:

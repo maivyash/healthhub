@@ -4,6 +4,7 @@ const User = require("../model/userModel");
 const JWT_SECRET = "eknumbertujhikambarchallshekasheki";
 
 const loginPoster = async (req, res) => {
+  console.log("Login Started");
   try {
     const { role, email, password } = req.body;
 

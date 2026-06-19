@@ -25,11 +25,11 @@ const FindDoctor = () => {
   const bookAppointment = (data) => {
     console.log(data);
 
-    fetch(`${process.env.REACT_APP_SERVER}/bookings/book`, {
+    return fetch(`${process.env.REACT_APP_SERVER}/bookings/book`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
-    }).then((res) => res.json());
+    });
   };
 
   useEffect(() => {

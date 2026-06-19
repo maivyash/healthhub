@@ -5,6 +5,7 @@ const pdfParse = require("pdf-parse");
 const { extractFromText } = require("../helper/geminiHelper");
 const ChatMessage = require("../model/message");
 const File = require("../model/file");
+const { cacheMiddleware, invalidateCache } = require("../helper/cache");
 
 const chatRouter = express.Router();
 
@@ -45,35 +46,17 @@ chatRouter.post("/send", upload.single("file"), async (req, res) => {
 
     if (req.file) {
       const path = req.file.path;
-      const pdfBuffer = fs.readFileSync(path);
-      const extractedText = (await pdfParse(pdfBuffer)).text;
-      4;
-      if (!extractedText) {
-        return res.status(482).json({ error: "PDF is not readable" });
-      }
-      const aiExtracted = await extractFromText(extractedText);
-      if (!aiExtracted) {
-        return res.status(482).json({ error: "AI failed" });
-      }
 
       const fileRecord = new File({
-        pathologyId: pathologyId,
-        doctorId: doctorId,
+
+        doctorId: doctorId || null,
         patientId: patientId,
         name: req.file.originalname,
         type: req.file.mimetype,
 
         path: path,
         uploadDate: new Date(),
-        extractedReports: [
-          {
-            reportType: aiExtracted.reportType || "Unknown",
-            parameters: aiExtracted.parameters || {},
-            reportDate: aiExtracted.reportDate
-              ? new Date(aiExtracted.reportDate)
-              : new Date(),
-          },
-        ],
+        extractedReports: [],
       });
 
       await fileRecord.save();
@@ -100,6 +83,7 @@ chatRouter.post("/send", upload.single("file"), async (req, res) => {
       });
 
       await message.save();
+      await invalidateCache("chat");
       res.status(200).json(message);
     } else {
       const message = new ChatMessage({
@@ -117,6 +101,7 @@ chatRouter.post("/send", upload.single("file"), async (req, res) => {
       });
 
       await message.save();
+      await invalidateCache("chat");
       res.status(200).json(message);
     }
   } catch (err) {
@@ -129,10 +114,15 @@ chatRouter.post("/send", upload.single("file"), async (req, res) => {
   }
 });
 
-chatRouter.get("/:roomId", async (req, res) => {
-  const { roomId } = req.params;
-  const messages = await ChatMessage.find({ roomId }).sort({ sentAt: 1 });
-  res.json(messages);
+chatRouter.get("/:roomId", cacheMiddleware("chat", 5), async (req, res) => {
+  try {
+    const { roomId } = req.params;
+    const messages = await ChatMessage.find({ roomId }).sort({ sentAt: 1 });
+    res.json(messages);
+  } catch (err) {
+    console.error("Chat fetch error:", err);
+    res.status(500).json({ error: "Failed to fetch messages" });
+  }
 });
 
 module.exports = chatRouter;

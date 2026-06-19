@@ -1,59 +1,120 @@
 #!/usr/bin/env node
 
 /**
- * Module dependencies.
+ * Server entry point with cluster mode for multi-core scaling.
+ * In production: forks one worker per CPU core (max 4).
+ * In development: runs single process for nodemon compatibility.
  */
 
 var app = require("../app");
 var debug = require("debug")("server:server");
 var http = require("http");
-
-/**
- * Get port from environment and store in Express.
- */
+var os = require("os");
+var cluster = require("cluster");
+const { ensureIndexes } = require("../helper/ensureIndexes");
+const { getRedisClient, closeRedis } = require("../helper/redisClient");
 
 var port = normalizePort(process.env.PORT || "8000");
 app.set("port", port);
 
-/**
- * Create HTTP server.
- */
+const isProd = process.env.NODE_ENV === "production";
+const numWorkers = Math.min(os.cpus().length, 4); // Cap at 4 workers
 
-var server = http.createServer(app);
-/**
- * Listen on provided port, on all network interfaces.
- */
+if (isProd && cluster.isPrimary) {
+  // ===== MASTER PROCESS =====
+  console.log(`🚀 Cluster master (PID ${process.pid}): forking ${numWorkers} workers`);
 
-server.listen(port, (req, res) => {
-  console.log("Server is started");
-});
-server.on("error", onError);
-server.on("listening", onListening);
+  for (let i = 0; i < numWorkers; i++) {
+    cluster.fork();
+  }
+
+  cluster.on("exit", (worker, code, signal) => {
+    console.warn(`⚠️ Worker ${worker.process.pid} died (${signal || code}). Respawning...`);
+    cluster.fork();
+  });
+
+  // Graceful shutdown for master
+  const shutdownMaster = () => {
+    console.log("\n🛑 Master: shutting down all workers...");
+    for (const id in cluster.workers) {
+      cluster.workers[id].process.kill("SIGTERM");
+    }
+    setTimeout(() => process.exit(0), 10000);
+  };
+  process.on("SIGTERM", shutdownMaster);
+  process.on("SIGINT", shutdownMaster);
+
+} else {
+  // ===== WORKER PROCESS (or single process in dev) =====
+  var server = http.createServer(app);
+
+  // Tune keep-alive for load balancer compatibility
+  server.keepAliveTimeout = 65000;
+  server.headersTimeout = 66000;
+
+  server.listen(port, async () => {
+    const workerId = cluster.worker ? cluster.worker.id : "single";
+    console.log(`✅ Worker ${workerId} (PID ${process.pid}) listening on port ${port}`);
+
+    // Initialize indexes and Redis on first worker (or single process)
+    try {
+      await ensureIndexes();
+    } catch (err) {
+      console.warn("⚠️ Index setup warning:", err.message);
+    }
+
+    try {
+      await getRedisClient();
+    } catch (err) {
+      console.warn("⚠️ Redis init warning:", err.message);
+    }
+  });
+
+  server.on("error", onError);
+  server.on("listening", onListening);
+
+  // Graceful shutdown for worker
+  const shutdownWorker = async () => {
+    console.log(`\n🛑 Worker ${process.pid}: graceful shutdown...`);
+    server.close(async () => {
+      try {
+        const mongoose = require("mongoose");
+        await mongoose.connection.close();
+        console.log("  ✅ MongoDB connection closed");
+      } catch (err) { /* ignore */ }
+
+      try {
+        await closeRedis();
+        console.log("  ✅ Redis connection closed");
+      } catch (err) { /* ignore */ }
+
+      process.exit(0);
+    });
+
+    // Force exit after 10 seconds if graceful shutdown hangs
+    setTimeout(() => {
+      console.error("  ⚠️ Forced exit after timeout");
+      process.exit(1);
+    }, 10000);
+  };
+
+  process.on("SIGTERM", shutdownWorker);
+  process.on("SIGINT", shutdownWorker);
+}
 
 /**
  * Normalize a port into a number, string, or false.
  */
-
 function normalizePort(val) {
   var port = parseInt(val, 10);
-
-  if (isNaN(port)) {
-    // named pipe
-    return val;
-  }
-
-  if (port >= 0) {
-    // port number
-    return port;
-  }
-
+  if (isNaN(port)) return val;
+  if (port >= 0) return port;
   return false;
 }
 
 /**
  * Event listener for HTTP server "error" event.
  */
-
 function onError(error) {
   if (error.syscall !== "listen") {
     throw error;
@@ -61,7 +122,6 @@ function onError(error) {
 
   var bind = typeof port === "string" ? "Pipe " + port : "Port " + port;
 
-  // handle specific listen errors with friendly messages
   switch (error.code) {
     case "EACCES":
       console.error(bind + " requires elevated privileges");
@@ -79,7 +139,6 @@ function onError(error) {
 /**
  * Event listener for HTTP server "listening" event.
  */
-
 function onListening() {
   var addr = server.address();
   var bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;

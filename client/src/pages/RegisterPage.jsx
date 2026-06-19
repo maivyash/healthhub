@@ -61,7 +61,7 @@ const RegisterPage = () => {
       return;
     }
 
-    toast.success("Form submitted successfully!");
+
     sendToBackend({ role, ...formData });
   };
 

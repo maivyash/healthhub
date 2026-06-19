@@ -13,7 +13,6 @@ loginRouter.get("/logout", (req, res) => {
   cookieNames.forEach((name) => {
     res.clearCookie(name, {
       path: "/",
-
       secure: true, // if using HTTPS
       httpOnly: true,
     });
